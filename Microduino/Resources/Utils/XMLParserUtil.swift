@@ -24,6 +24,7 @@ class XMLParserUtil: NSObject, NSXMLParserDelegate {
         contentStr = contentStr.stringByReplacingOccurrencesOfString("<p><br></p>", withString: "")
         contentStr = contentStr.stringByReplacingOccurrencesOfString("<br>", withString: "")
         contentStr = contentStr.stringByReplacingOccurrencesOfString("<span style=\"letter-spacing: 0.8px;\">", withString: "")
+        contentStr = contentStr.stringByReplacingOccurrencesOfString("&rsquo;", withString: "'")
         contentStr = contentStr.stringByReplacingOccurrencesOfString("</span>", withString: "")
         self.block = block
  
