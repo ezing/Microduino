@@ -1,0 +1,216 @@
+<p align="left"><span lang="en-US" style="font-family: Calibri; font-size: 24px; font-weight: bold;">Microduino</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 24px; font-weight: bold;">平衡车笔记（第二弹）</span></p><p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px; font-weight: bold;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><b>nbsp;nbsp;nbsp; </b>上次我们利用</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">Microduino</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">模块搭建了一个平衡车，在这次笔记中我们将利用</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">组建一个乐高平衡车。</span></span></p><p></p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px; font-weight: bold;"><p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="en-US" style="font-family: Calibri; font-size: 18px;">1.mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;">平衡车的变化</span></span></p><p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><b>nbsp;nbsp;nbsp;nbsp; </b>相对于</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">Microduino</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">，</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;"> mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">系列暂时还没有步进电机驱动模块，此处我们可以选择</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">mCookie-Motor</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">模块配合直流电机的方案。</span><span lang="en-US" style="font-family: 微软雅黑; font-size: 14px;"> </span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">但是直流电机是一种电流控制型器件，在使用过程中无法精确控制电机转速，而要实现平衡车的双闭环控制，我们就需要在直流电机上增加测速传感器。</span></span></span></p><p align="center"><img style="width: 566px;" src="http://oss.microduino.cn/picture/large/Images/xGvnfmhNpg2seyJZd-QQ截图20160402134257.jpg" data-filename="QQ截图20160402134257.jpg"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><b></b><br></span></span></span></p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><p align="left"><span lang="zh-CN" style="font-family:微软雅黑"><b>nbsp;nbsp;nbsp;nbsp; </b>最终我们选择了一款带霍尔测速的</span><span lang="en-US" style="font-family:Calibri">N20</span><span lang="zh-CN" style="font-family:微软雅黑">直流电机，该直流电机的减速比是</span><span lang="en-US" style="font-family:Calibri">100</span><span lang="zh-CN" style="font-family:微软雅黑">：</span><span lang="en-US" style="font-family:Calibri">1</span><span lang="zh-CN" style="font-family:微软雅黑">，霍尔测速的分辨率为</span><span lang="en-US" style="font-family:Calibri">198.6</span><span lang="zh-CN" style="font-family:
+微软雅黑">，意思是电机输出轴每转一圈，霍尔测速器平均输出</span><span lang="en-US" style="font-family:Calibri">198.6</span><span lang="zh-CN" style="font-family:微软雅黑">个计数脉冲。因此，在电机使用过程中就可以通过采集测速脉冲来计算出电机的转速。</span></p><p align="left"><span lang="zh-CN" style="font-family:微软雅黑"><span lang="en-US" style="font-family: Calibri; font-size: 18px;">2.mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;">平衡车硬件方案</span></span><span lang="zh-CN" style="font-family:微软雅黑"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><br></span></span><span lang="zh-CN" style="font-family:微软雅黑"><i><u><sub><sup><strike><br></strike></sup></sub></u></i></span><span lang="zh-CN" style="font-family:微软雅黑">nbsp;nbsp;nbsp;nbsp; 同</span><span lang="en-US" style="font-family:Calibri">Microduino</span><span lang="zh-CN" style="font-family:微软雅黑">平衡车的原理，我们确定</span><span lang="en-US" style="font-family:Calibri">mCookie</span><span lang="zh-CN" style="font-family:
+微软雅黑">平衡车的组成部件如下：</span></p><p align="center"><img style="width: 566px;" src="http://oss.microduino.cn/picture/large/Images/fETXu75B45cvgYwtu-mCookie功能实现.jpg" data-filename="mCookie功能实现.jpg"><span lang="zh-CN" style="font-family:
+微软雅黑"><b><br></b><br></span></p><p align="left"><span lang="zh-CN" style="font-family:
+微软雅黑"><span lang="en-US" style="font-family: Calibri; font-size: 18px;">3.mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;">平衡车软件方案</span></span></p><p align="left"><span lang="zh-CN" style="font-family:
+微软雅黑"><span lang="zh-CN" style="font-family: 微软雅黑;">nbsp;nbsp;nbsp;nbsp; 当然，同是平衡车，软件架构也还是一样的，只是电机的测速和驱动方式与步进电机不同。</span></span></p><p align="center"><img style="width: 648px;" src="http://oss.microduino.cn/picture/large/Images/rdxNZr86tFeFAivcS-软件流程图.jpg" data-filename="软件流程图.jpg"><span lang="zh-CN" style="font-family:
+微软雅黑"><span lang="zh-CN" style="font-family: 微软雅黑;"><i><u><sub><sup><strike><b><br></b></strike></sup></sub></u></i></span><i><u><sub><sup><strike><br></strike></sup></sub></u></i></span><i></i><u></u><sub></sub><sup></sup><strike></strike><b></b><br></p></span></span></span><p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><span lang="zh-CN" style="font-family:微软雅黑"><span lang="en-US" style="font-family: Calibri;">4.mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑;">平衡车源代码说明</span></span></span></span></p><p></p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><p></p><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;"><p></p><span lang="zh-CN" style="font-family:微软雅黑"><p></p><span lang="zh-CN" style="font-family: 微软雅黑;"><p>
+
+</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<b></b><br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">#include "RollPitch.h"<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">姿态解算库</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">#include "motor.h"<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">电机驱动库</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">#include <PID_v1.h><span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//PID</span><span style="font-family:微软雅黑">库</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">#include "Protocol.h"<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">遥控协议库</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">#include "userDef.h"<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">用户自定义</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">PID speedPID((double)KP_SPD, (double)KI_SPD, (double)KD_SPD,
+DIRECT);<span style="mso-spacerun:yes">nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">速度环</span><span style="font-family:Calibri">PID</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">PID anglePID((double)KP_ANG, (double)KI_ANG, (double)KD_ANG,
+DIRECT);<span style="mso-spacerun:yes">nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">角度环</span><span style="font-family:Calibri">PID</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">int16_t throttle;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">油门值</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">int16_t steering;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">转向值</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">float robotSpeedFilter;<span style="mso-spacerun:yes">nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">小车速度滤波值</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">float targetSpeed;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">小车目标速度</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">float batteryValue;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">电池电压</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">float ypr[3];<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">姿态解算值</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+nbsp;</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">int M_right =6;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">右电机驱动引脚</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">int
+M_right2=8;</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri">int M_left =5;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">左电机驱动引脚</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">int
+M_left2 =7; </p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">void
+setup(){</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>Serial.begin(115200);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>dmpSetup();<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//dmp</span><span style="font-family:微软雅黑">初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>protocolSetup();<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:
+微软雅黑">遥控协议初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+nbsp;</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;
+</span>speedPID.SetMode(AUTOMATIC);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">速度环</span><span style="font-family:Calibri">PID</span><span style="font-family:微软雅黑">初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;
+</span>anglePID.SetMode(AUTOMATIC);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">角度环</span><span style="font-family:Calibri">PID</span><span style="font-family:微软雅黑">初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>speedPID.SetITermLimits(-10, 10);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>speedPID.SetOutputLimits(-MAX_TARGET_ANGLE,
+MAX_TARGET_ANGLE);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>anglePID.SetOutputLimits(-800, 800); </p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>TIMER_INT();<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:
+微软雅黑">测速器初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>pinMode(A0, INPUT);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>pinMode(A1, INPUT);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>pinMode(A2, INPUT);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>pinMode(A3, INPUT);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;nbsp; </span>pinMode(M_right,
+OUTPUT);pinMode(M_right2, OUTPUT);<span style="mso-spacerun:yes">nbsp; </span>//</span><span style="font-family:微软雅黑">右电机引脚初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;nbsp; </span>pinMode(M_left,
+OUTPUT);pinMode(M_left2, OUTPUT);<span style="mso-spacerun:yes">nbsp; </span>//</span><span style="font-family:微软雅黑">左电机引脚初始化</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp;
+</span>Serial.println("===========start===========");</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">}</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">void
+loop(){</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>if (protocolRead(channelData,
+NUM_ROBOT)) {<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">判断是否接收到遥控信号</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp; </span>throttle =
+map(channelData[CHANNEL_THROTTLE], 1000, 2000, -MAX_THROTTLE,
+MAX_THROTTLE);<span style="mso-spacerun:yes">nbsp; </span>//</span><span style="font-family:微软雅黑">更新油门值 </span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp; </span>steering =
+map(channelData[CHANNEL_STEERING], 1000, 2000, -MAX_STEERING,
+MAX_STEERING);<span style="mso-spacerun:yes">nbsp; </span>//</span><span style="font-family:微软雅黑">更新转向值</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>}</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>batteryValue =
+(analogRead(A7)/1024.0)*BAT_DETECT;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>//</span><span style="font-family:微软雅黑">采集电池电压</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>dmpGetYPR(ypr);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">更新姿态角</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>float robotAngle =
+ypr[DIRECTION] + ANGLE_FIX;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">取</span><span style="font-family:Calibri">Roll</span><span style="font-family:微软雅黑">轴角度 </span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>float robotSpeed = (speedVal1
+- speedVal2)/80; // </span><span style="font-family:微软雅黑">正面：前锋 </span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>robotSpeedFilter =
+robotSpeedFilter * 0.95 + robotSpeed * 0.05;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:
+微软雅黑">小车速度滤波</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>float targetAngle =
+speedPID.Compute(robotSpeedFilter, throttle);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">速度环计算目标角度</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>targetSpeed +=
+anglePID.Compute(robotAngle, targetAngle);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:
+微软雅黑">角度环计算电机转速</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>targetSpeed =
+constrain(targetSpeed, -800, 800);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;
+</span>// </span><span style="font-family:微软雅黑">限制最大输出转速</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>int16_t motorR = targetSpeed +
+steering;<span style="mso-spacerun:yes">nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">计算右电机转速</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>int16_t motorL = targetSpeed -
+steering;<span style="mso-spacerun:yes">nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">计算左电机转速</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>motorR = constrain(motorR, -255, 255);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="mso-spacerun:yes">nbsp; </span>motorL = constrain(motorL, -255, 255);</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-size:11.0pt"><span style="font-family:
+Calibri"><span style="mso-spacerun:yes">nbsp; </span>SetMotorVoltage(motorL,
+motorR);<span style="mso-spacerun:yes">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; </span>//</span><span style="font-family:微软雅黑">更新电机驱动电压</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<br></p><p lang="en-US" style="margin:0in;font-family:Calibri;font-size:11.0pt">}</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+<b></b><br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b></b><br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><span lang="x-none" style='font-family: "Arial Unicode MS"; font-size: 18px;'>5</span><span lang="en-US" style="font-family: Calibri; font-size: 18px;">.mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 18px;">平衡车的缺陷</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><span lang="zh-CN" style="font-family: 微软雅黑;"><br></span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><span lang="zh-CN" style="font-family: 微软雅黑;"><span lang="zh-CN" style="font-size: 14px;">nbsp;nbsp;nbsp;nbsp; 在</span><span lang="x-none" style="font-size: 14px;">mCookie</span><span lang="zh-CN" style="font-size: 14px;">平衡车的制作过程中，我们最开始尝试的是减速比为</span><span lang="en-US" style="font-size: 14px;">30</span><span lang="zh-CN" style="font-size: 14px;">：</span><span lang="en-US" style="font-size: 14px;">1</span><span lang="zh-CN" style="font-size: 14px;">的</span><span lang="en-US" style="font-size: 14px;">N20</span><span lang="zh-CN" style="font-size: 14px;">电机，但是最终小车的平衡效果并不理想，小车虽然能够不倒，但是一直处于大幅度的摆动状态中，我认为这是和直流电机的工作特性有关，直流电机是一种电流驱动型感应电机，平时我们使用的现象是给直流电机一定的电压，直流电机就会转动，而且电压越高，电机的转速越快，理想情况如下图，直流电机的驱动电压和电机的转速呈线性关系。</span></span></p><p align="center" style="margin:0in;font-family:Calibri;font-size:11.0pt"><img style="width: 531px; height: 431.51px;" src="http://oss.microduino.cn/picture/large/Images/3dWtZCn6EksuTn3q3-电机转速特性1.jpg" data-filename="电机转速特性1.jpg"><span lang="zh-CN" style="font-family: 微软雅黑;"><span lang="zh-CN"><b></b><br></span></span></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span lang="zh-CN" style="font-family: 微软雅黑;"><span lang="zh-CN"><b>nbsp;nbsp;nbsp;nbsp; </b><span style="font-size: 14px;">但是，理想往往是美好的，实际中因电机阻尼和线圈电阻的关系，直流电机的驱动电压和转速的关系往往呈现下图的情况：</span></span></span></p><p align="center" style="margin:0in;font-family:Calibri;font-size:11.0pt"><img style="width: 582px; height: 416.46px;" src="http://oss.microduino.cn/picture/large/Images/WhBpGRsWGYhMQDDc4-电机转速特性2.jpg" data-filename="电机转速特性2.jpg"><span lang="zh-CN" style="font-family: 微软雅黑;"><span lang="zh-CN"><i><u><sub><sup><strike><b><br></b></strike></sup></sub></u></i></span><i><u><sub><sup><strike><br></strike></sup></sub></u></i></span><i></i><u></u><sub></sub><sup></sup><strike><b></b><br></strike></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+</p><p style="margin:0in;font-family:微软雅黑;font-size:11.0pt"><span style="font-size: 14px;"><b>nbsp;nbsp;nbsp;nbsp; </b>直流电机会存在一个启动电压，这是电机需要克服外界的阻尼，而且电机在电压较低时转速变化比较慢，这是因为电机线圈的电阻在消耗能量。</span></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="font-size: 14px;">
+
+</span></p><p style="margin:0in;font-size:11.0pt"><span lang="en-US" style="font-family:Calibri"><span style="font-size: 14px; mso-spacerun: yes;">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;</span></span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">通过以上分析，由于直流电机实际使用过程中的特性，电机的低速性能较差，导致平衡车只能以较快的速度来回摆动，为改善这个问题，只好改用</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">100</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">：</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">1</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">的</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">N20</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">减速电机，平衡车的摆动幅度确实减小了，同时由于减速比较大，直流电机的最大速度也受限了，平衡车在倾角过大时无法调整回平衡位置，容易栽倒。</span></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="font-size: 14px;">
+
+</span></p><p style="margin:0in;font-size:11.0pt"><span lang="en-US" style="font-family:Calibri"><span style="font-size: 14px; mso-spacerun: yes;">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;</span></span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">以上是</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">mCookie</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">平衡车在制作过程中遇到的疑惑，也还没有很好的解决，也许采用较大减速比的直流电机</span><span lang="en-US" style="font-family: Calibri; font-size: 14px;">+</span><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;">高电压驱动能够改善直流电机的转速特性，这些工作还有待完善。</span><span lang="zh-CN" style="font-family:微软雅黑"><br></span></p><span lang="zh-CN" style="font-family:微软雅黑"><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b></b><br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><span lang="x-none" style='font-family: "Arial Unicode MS";'><span lang="zh-CN" style="font-family: 微软雅黑; font-size: 14px;"><span lang="en-US" style="font-family: Calibri; font-size: 18px;">6.最终成品</span></span></span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b>nbsp;nbsp;nbsp;nbsp;</b><span lang="en-US" style="font-family: Calibri;"><br></span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b>nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;</b>在制作mCookie平衡车的中，因一些验证工作，前前后后一共制作了4辆平衡车，下面是成果展示。</p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><br></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b>nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;</b><span style="font-size: 18px;">nbsp;Microduin平衡车（Microduino-Core+ 和步进电机）</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><img style="width: 886px;" src="http://oss.microduino.cn/picture/large/Images/4LrgvYHXKAS9iERWH-DSC01898.JPG" data-filename="DSC01898.JPG"><span lang="en-US" style="font-family: Calibri;"><b><br></b></span><span lang="zh-CN" style="font-family: 微软雅黑;"></span><i></i><u></u><sub></sub><sup></sup><strike><br></strike></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><strike><b><br></b></strike><span style="font-size: 18px;">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp; mCookie乐高平衡车（mCookie-Core+ 和N20电机）,此处偷懒，没装电机线</span></p><p style="margin:0in;font-family:Calibri;font-size:11.0pt"><b></b><br></p></span><p style="margin:0in;font-size:11.0pt"><img style="width: 886px;" src="http://oss.microduino.cn/picture/large/Images/KDwxdrsKWF6pT9C4D-DSC01895.JPG" data-filename="DSC01895.JPG"></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt">
+
+</p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><i><u><sub><sup><strike><b><br></b></strike></sup></sub></u></i><span style="font-size: 18px;">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;</span></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><span style="font-size: 18px;">nbsp;nbsp;nbsp;nbsp;nbsp;nbsp;Microduino乐高平衡车（Microduino-Core+ 和N20电机），哈哈，上图的电机线在下面。</span></p><p align="left" style="margin:0in;font-family:Calibri;font-size:11.0pt"><img style="width: 886px;" src="http://oss.microduino.cn/picture/large/Images/87yw3bngd2C5RnEBL-DSC01892.JPG" data-filename="DSC01892.JPG"></p></span><p><br></p><p>nbsp;nbsp;nbsp;nbsp; 工程验证平衡车（STM32F103CBT6 和 370电机）</p><p><img style="width: 886px;" src="http://oss.microduino.cn/picture/large/Images/scPJ3ZPKw3MAfYWou-DSC01894.JPG" data-filename="DSC01894.JPG"><b></b><br></p><p><b><br></b></p><p>nbsp;nbsp;nbsp;nbsp;nbsp; 再来个合照</p><p><img style="width: 886px;" src="http://oss.microduino.cn/picture/large/Images/SSfGZz9JAMc52ee2F-DSC01902.JPG" data-filename="DSC01902.JPG"><b></b><br></p></span><p><b></b><br></p><p>最后祝大家的生活也如平衡车一般，立而不倒。</p><p>谢谢支持。<b></b><br></p></span><p><i><u><sub><sup><strike><b></b><br></strike></sup></sub></u></i></p></span><p>
+
+</p><p style="margin:0in;margin-left:.375in;font-size:11.0pt"><span lang="zh-CN" style="font-family:微软雅黑"><b></b><br></span></p><p>
+
+<i></i><u></u><sub></sub><sup></sup><strike></strike><b></b><br></p></span><p></p>

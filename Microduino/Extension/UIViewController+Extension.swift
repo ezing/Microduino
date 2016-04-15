@@ -64,7 +64,7 @@ extension UIViewController {
         errorView.center = self.view.center
         errorView.setImage(UIImage(named: "not_network_icon_unpre"), forState: .Normal)
         errorView.setImage(UIImage(named: "not_network_icon_pre"), forState: .Highlighted)
-        errorView.addTarget(self, action: #selector(DiscoverViewController.errorViewDidClick(_:)), forControlEvents: .TouchUpInside)
+        errorView.addTarget(self, action: #selector(errorViewDidClick(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(errorView)
         // 让他处在view的最上层
         self.view.bringSubviewToFront(errorView)

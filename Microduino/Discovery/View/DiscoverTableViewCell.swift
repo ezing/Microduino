@@ -1,13 +1,14 @@
 //
-//  WZScalableTableViewCell.swift
-//  WZStoreHouseTableView
+//  DiscoverTableViewCell.swift
+//  Microduino
 //
-//  Created by z on 15-2-28.
-//  Copyright (c) 2015年 SatanWoo. All rights reserved.
+//  Created by harvey on 16/3/28.
+//  Copyright © 2016年 harvey. All rights reserved.
 //
 
+
 import UIKit
-import SDWebImage
+import Kingfisher
 
 class DiscoverTableViewCell:UITableViewCell {
    
@@ -26,10 +27,10 @@ class DiscoverTableViewCell:UITableViewCell {
         didSet {
             
             if model != nil {
-           // self.cover_image.sd_setImageWithURL(NSURL(string:(model?.cover_image)!))
-                self.author_avator.sd_setImageWithURL(NSURL(string: (model?.cover_image)!))
-            self.author_image = resizeImage(UIImage(data:NSData(contentsOfURL:NSURL(string:(model?.cover_image)!)!)!)!, newWidth:self.cover_image.width)
-            self.cover_image.image = self.author_image
+            
+          let imageUrl = NSURL(string:((model?.cover_image)?.stringByAddingPercentEncodingWithAllowedCharacters( NSCharacterSet.URLQueryAllowedCharacterSet())!)!)
+            self.author_avator.kf_setImageWithURL(imageUrl!,placeholderImage: nil,optionsInfo:nil)
+            self.cover_image.kf_setImageWithURL(imageUrl!,placeholderImage: nil,optionsInfo:nil)
             self.titleLabel.text = model?.article_title
             self.author_name.text = model?.author_name
              
@@ -55,7 +56,8 @@ class DiscoverTableViewCell:UITableViewCell {
         
         cover_image = UIImageView(frame:CGRectMake(0,0,SCREEN_WIDTH-40,SCREEN_WIDTH-140))
         
-        titleLabel = UILabel(frame:CGRectMake(25,SCREEN_WIDTH-140,SCREEN_WIDTH-40,44))
+        titleLabel = UILabel(frame:CGRectMake(20,SCREEN_WIDTH-140,SCREEN_WIDTH-80,44))
+        titleLabel.font = UI_FONT_16
         author_avator = UIImageView(frame:CGRectMake(20,SCREEN_WIDTH-100,50,50))
         author_avator.layer.masksToBounds = true
         author_avator.layer.cornerRadius = 25

@@ -84,23 +84,27 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods/AFDateHelper.framework"
   install_framework "Pods/Alamofire.framework"
   install_framework "Pods/CryptoSwift.framework"
   install_framework "Pods/Fuzi.framework"
   install_framework "Pods/IQKeyboardManagerSwift.framework"
+  install_framework "Pods/Kingfisher.framework"
+  install_framework "Pods/MJRefresh.framework"
   install_framework "Pods/MMDrawerController.framework"
-  install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/SwiftDDP.framework"
   install_framework "Pods/SwiftWebSocket.framework"
   install_framework "Pods/XCGLogger.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods/AFDateHelper.framework"
   install_framework "Pods/Alamofire.framework"
   install_framework "Pods/CryptoSwift.framework"
   install_framework "Pods/Fuzi.framework"
   install_framework "Pods/IQKeyboardManagerSwift.framework"
+  install_framework "Pods/Kingfisher.framework"
+  install_framework "Pods/MJRefresh.framework"
   install_framework "Pods/MMDrawerController.framework"
-  install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/SwiftDDP.framework"
   install_framework "Pods/SwiftWebSocket.framework"
   install_framework "Pods/XCGLogger.framework"

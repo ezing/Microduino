@@ -16,4 +16,14 @@
 //#import <TencentOpenAPI/TencentOAuth.h>
 #import "YYText.h"
 #import "YYWebImage.h"
+#import "NSString-Extension.h"
+#import "LCStarView.h"
+#import "CircularLoaderView.h"
+#import "UMSocial.h"
+#import "UMSocialSinaSSOHandler.h"
+#import "UMSocialQQHandler.h"
+#import "UMSocialWechatHandler.h"
+#import "UMSocialFacebookHandler.h"
+#import "UMSocialTwitterHandler.h"
+#import "UMSocialInstagramHandler.h"
 #endif /* Microduino_Bridge_Header_h */

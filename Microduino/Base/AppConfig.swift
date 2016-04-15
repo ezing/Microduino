@@ -38,3 +38,21 @@ let NOTIFY_SETUPCENTERVIEW : String = "NOTIFY_SETUPCENTERVIEW"
 // 默认背景色
 let UI_COLOR_APPNORMAL : UIColor = UIColor(red: 54/255.0, green: 142/255.0, blue: 198/155.0, alpha: 1)
 let UI_COLOR_BORDER : UIColor = UIColor(red: 240/255.0, green: 240/255.0, blue: 240/255.0, alpha: 1)
+
+let HOST_NAME:String =
+//"ws://10.2.20.89:3000/websocket"
+
+"wss://www.microduino.cn:443/websocket"
+
+let HTML_CONSTRAINT:String = "<head><style>img{width:100% !important;}</style><body width=100% style=\"word-wrap:break-word; font-family:Arial\"></head>"
+let FOUND_IMG = "function addImgClickEvent() { " +
+    "var imgs = document.getElementsByTagName('img');" +
+    // 遍历所有的img标签，统一加上点击事件
+    "for (var i = 0; i < imgs.length; ++i) {" +
+    "var img = imgs[i];" +
+    "img.onclick = function () {" +
+    // 给图片添加URL scheme，以便在拦截时可能识别跳转
+    "window.location.href = 'hyb-image-preview:' + this.src;" +
+    "}" +
+    "}" +
+"}"

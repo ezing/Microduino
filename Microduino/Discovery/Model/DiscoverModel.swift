@@ -19,15 +19,21 @@ class DiscoverModel: NSObject {
     var cover_image : String?
     // 文章标题
     var article_title:String?
+    
+    var card_Id:String?
+    
+    var card_Type:String?
  
     convenience init(dict : NSDictionary) {
         self.init()
         
-        self.author_id = dict["_id"] as? String
-        self.author_avator = dict["saLKsf3m3bDi3cCiY"] as? String
-        self.author_name = dict["type"] as? String
+        self.author_id = "\(dict["_id"]!)"
+        self.author_avator = "\(dict["picture"]!)"
+        self.author_name = "\(dict["type"]!)"
         self.cover_image = "\(dict["picture"]!)"
         self.article_title = "\(dict["title"]!)"
+        self.card_Id = "\(dict["cardId"]!)"
+        self.card_Type = "\(dict["type"]!)"
        
     }
     

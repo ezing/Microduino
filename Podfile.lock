@@ -1,8 +1,11 @@
 PODS:
+  - AFDateHelper (3.3.0)
   - Alamofire (3.2.1)
   - CryptoSwift (0.3)
   - Fuzi (0.3.1)
   - IQKeyboardManagerSwift (4.0.0)
+  - Kingfisher (2.2.0)
+  - MJRefresh (3.1.0)
   - MMDrawerController (0.5.7):
     - MMDrawerController/Core (= 0.5.7)
     - MMDrawerController/MMDrawerBarButtonItem (= 0.5.7)
@@ -15,9 +18,6 @@ PODS:
     - MMDrawerController/Core
   - MMDrawerController/Subclass (0.5.7):
     - MMDrawerController/Core
-  - SDWebImage (3.7.5):
-    - SDWebImage/Core (= 3.7.5)
-  - SDWebImage/Core (3.7.5)
   - SwiftDDP (0.2.2.1):
     - CryptoSwift (~> 0.3)
     - SwiftWebSocket (~> 2.6.0)
@@ -26,20 +26,24 @@ PODS:
   - XCGLogger (3.3)
 
 DEPENDENCIES:
+  - AFDateHelper
   - Alamofire (~> 3.0)
   - Fuzi (~> 0.3.0)
   - IQKeyboardManagerSwift
+  - Kingfisher (~> 2.2)
+  - MJRefresh
   - MMDrawerController (~> 0.5.7)
-  - SDWebImage
   - SwiftDDP (~> 0.2.2)
 
 SPEC CHECKSUMS:
+  AFDateHelper: 137b5b9d70fe13b810e1817fa2d8c116d7988f5c
   Alamofire: f11d8624a05f5d39e0c99309b3e600a3ba64298a
   CryptoSwift: 19d29910d88440fcb132761d9ab57e175f1b0d0e
   Fuzi: 25118b725a1637f1676f63ae1acbba1f30a5dd6c
   IQKeyboardManagerSwift: ede2a27b4e1ce053d03073b9c7fa439322f5e405
+  Kingfisher: 350869ed88d6451803b390475d977abdd9f0a357
+  MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
   MMDrawerController: 7a4cf8e25596bf2434e03ce50d22a8608ddee6a1
-  SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   SwiftDDP: b4a4d2b2adc47836fb4fb4828b8ef4c68f3f89b1
   SwiftWebSocket: c24c0dde0b33852f478ffb54226408bfe703b26b
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31

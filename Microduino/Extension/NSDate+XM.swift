@@ -71,5 +71,7 @@ extension NSDate {
         return array[(day-3)%7]
 //        return "星期\((day-3)%7))"
     }
+ 
+ 
     
 }

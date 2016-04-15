@@ -23,9 +23,11 @@ class XMLParserUtil: NSObject, NSXMLParserDelegate {
         var contentStr = "<content>" + content + "</content>"
         contentStr = contentStr.stringByReplacingOccurrencesOfString("<p><br></p>", withString: "")
         contentStr = contentStr.stringByReplacingOccurrencesOfString("<br>", withString: "")
-        contentStr = contentStr.stringByReplacingOccurrencesOfString("<span style=\"letter-spacing: 0.8px;\">", withString: "")
-        contentStr = contentStr.stringByReplacingOccurrencesOfString("&rsquo;", withString: "'")
-        contentStr = contentStr.stringByReplacingOccurrencesOfString("</span>", withString: "")
+//        contentStr = contentStr.stringByReplacingOccurrencesOfString("<span style=\"letter-spacing: 0.8px;\">", withString: "")
+//        contentStr = contentStr.stringByReplacingOccurrencesOfString("</span>", withString: "")
+//        contentStr = contentStr.stringByReplacingOccurrencesOfString("<o:p></o:p>", withString: "")
+//        contentStr = contentStr.stringByReplacingOccurrencesOfString("&quot;", withString: "")
+        
         self.block = block
  
         parserManager = NSXMLParser(data: contentStr.dataUsingEncoding(NSUTF8StringEncoding)!)
@@ -38,14 +40,24 @@ class XMLParserUtil: NSObject, NSXMLParserDelegate {
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         
+         print(currentElement)
+        
         currentElement = elementName
         if elementName == "img" {
            
             currentModel = XMLContentModel()
             currentElement = "img"
             currentValue = attributeDict["src"]
+              print("图片",currentValue)
             currentModel!.contentType = .XMLContentTypeImg
             currentModel!.content = attributeDict["src"]!
+        }else if elementName == "a" {
+            currentModel = XMLContentModel()
+            currentElement = "a"
+            currentValue = attributeDict["href"]!
+            currentModel!.contentType = .XMLContentTypeA
+            currentModel!.content = attributeDict["href"]!
+            print("链接",currentValue)
         }
         
         
@@ -55,20 +67,24 @@ class XMLParserUtil: NSObject, NSXMLParserDelegate {
     
     func parser(parser: NSXMLParser, foundCharacters string: String) {
         
+        print(currentElement)
+        
         if currentElement != "" {
             // 发现标题
             switch currentElement! {
                 case "h2":
-              
+                  
                     currentModel = XMLContentModel()
                     currentModel?.contentType = .XMLContentTypeH2
                     currentValue = string
+                    print("标题",currentValue)
                     currentModel?.content = currentValue
                 case "p" :
-         
+                   
                     currentModel = XMLContentModel()
                     currentModel?.contentType = .XMLContentTypeP
                     currentValue = string
+                      print("内容",currentValue)
                     currentModel?.content = currentValue
             default:
                 break

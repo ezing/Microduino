@@ -11,21 +11,25 @@ import MMDrawerController
 import Alamofire
 import Fuzi
 import SwiftDDP
+import MJRefresh
 class DiscoverViewController: UIViewController {
 
     private var viewModel : DiscoverViewModel?
-    private var hotPage : Int = 1
+    private var hotPage : Int = 0
+    private var limit:Int = 10
     var tableView : UITableView?
   
     override func viewDidLoad() {
         super.viewDidLoad()
  
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(DiscoverViewController.errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
+        Meteor.client.logLevel = .Error
+        Meteor.client.allowSelfSignedSSL = true
         
         createUI()
         showProgress()
         viewModel = DiscoverViewModel(articleTable:self.tableView!)
-        reloadData()
+        reloadData(hotPage,limit: limit)
 
         
     }
@@ -42,44 +46,15 @@ class DiscoverViewController: UIViewController {
         self.tableView!.tableFooterView = UIView()
         self.tableView!.separatorStyle = UITableViewCellSeparatorStyle.None
         self.tableView!.registerClass(DiscoverTableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self,refreshingAction: #selector(tableFooterRefresh))
         self.view!.addSubview(self.tableView!)
         
         let menuButton=UIButton(frame: CGRectMake(20,30,20,20))
         menuButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        menuButton.setImage(UIImage(named:"menu-1"), forState: UIControlState.Normal)
-        menuButton.addTarget(self, action:#selector(DiscoverViewController.doneSlide), forControlEvents: UIControlEvents.TouchUpInside)
+        menuButton.setImage(UIImage(named:"menu"), forState: UIControlState.Normal)
+        menuButton.addTarget(self, action:#selector(doneSlide), forControlEvents: UIControlEvents.TouchUpInside)
         navigationView.addSubview(menuButton)
         
-    }
-    
-    
-    
-    func doneSlide(){
-      
-        self.mm_drawerController.toggleDrawerSide(MMDrawerSide.Left ,animated:true, completion:nil);
-       
-    }
-    func errorBtnDidClick() {
-      
-        reloadData()
-    }
-    
-    func reloadData(){
-        
-        let dict: [String: AnyObject] = ["offset": "0","limit": "2"]
-        
-        Meteor.connect("wss://w.microduino.cn:443/websocket") {
-            Meteor.call("mobile/cards", params:[dict], callback: { (result, error) in
-                if((error) != nil){
-                    self.showNetWorkErrorView()
-                    self.hiddenProgress()
-                    
-                }else{
-                    
-                    self.hiddenProgress()
-                    self.viewModel?.initArticleData(result as! NSMutableArray)
-                }})
-        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -118,10 +93,65 @@ extension DiscoverViewController:UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        self.navigationController?.pushViewController(DiscoverDetailViewController(), animated:true)
+        tableView.deselectRowAtIndexPath(indexPath, animated:false)
+        let discoverDetailViewController = DiscoverDetailViewController()
+        discoverDetailViewController.card_Id = viewModel?.newDataSource[indexPath.section].card_Id
+        discoverDetailViewController.card_Type = viewModel?.newDataSource[indexPath.section].card_Type
+        self.navigationController?.pushViewController(discoverDetailViewController, animated:true)
     }
     
- 
- 
 }
+
+extension DiscoverViewController{
+
+    
+    func doneSlide(){
+        
+        self.mm_drawerController.toggleDrawerSide(MMDrawerSide.Left ,animated:true, completion:nil);
+        
+    }
+    func errorBtnDidClick() {
+        
+        reloadData(hotPage,limit:limit)
+    }
+    
+    func tableFooterRefresh(){
+    
+        let workingQueue = dispatch_queue_create("my_queue", nil)
+        dispatch_async(workingQueue) {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.reloadData(self.hotPage, limit:self.limit)
+                self.tableView?.reloadData()
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }
+
+    
+    
+    }
+    
+    func reloadData(offset:Int,limit:Int){
+      
+        let dict: [String: AnyObject] = ["offset":String(offset),"limit":String(limit)]
+        Meteor.connect(HOST_NAME){
+        
+        Meteor.loginWithPassword("zidong0822@sina.cn", password: "15034292610wo") { result, error in
+
+            
+        }
+        Meteor.call("mobile/cards", params:[dict], callback: { (result, error) in
+                if((error) != nil){
+                    self.showNetWorkErrorView()
+                    self.hiddenProgress()
+                    
+                }else{
+                    self.hiddenProgress()
+                    self.viewModel?.initArticleData(result as! NSMutableArray)
+                    self.hotPage = limit
+                    self.limit = limit+10
+                    
+                }})
+            }
+    }
+    }
+

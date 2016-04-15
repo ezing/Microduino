@@ -24,3 +24,4 @@ let UI_MARGIN_5 : CGFloat = 5
 let UI_MARGIN_10 : CGFloat = 10
 let UI_MARGIN_15 : CGFloat = 15
 let UI_MARGIN_20 : CGFloat = 20
+let UI_MARGIN_25 : CGFloat = 25

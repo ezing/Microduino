@@ -23,8 +23,8 @@ public extension NSString {
        return self.stringByReplacingOccurrencesOfString(target, withString: "")
     }
     
-    
-    
+
+       
     /**
     删除指定范围内的所有字符串
     

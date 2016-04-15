@@ -30,12 +30,12 @@ class DiscoverViewModel: NSObject {
     }
     
     func initArticleData(result:NSMutableArray){
-    
+       print(result)
         for dict in result {
             let discoverModel : DiscoverModel = DiscoverModel(dict: dict as! NSDictionary)
-            
             self.newDataSource.append(discoverModel)
             self.articleTable.reloadData()
             
         }
-    }}
+    }
+}
