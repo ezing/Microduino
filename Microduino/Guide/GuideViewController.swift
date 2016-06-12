@@ -1,125 +1,65 @@
 //
-//  GuideViewController.swift
+//  Guide1ViewController.swift
 //  Microduino
 //
-//  Created by harvey on 16/3/22.
+//  Created by harvey on 16/4/6.
 //  Copyright © 2016年 harvey. All rights reserved.
 //
 
 import UIKit
-import AVFoundation
 
-class GuideViewController: GuideBaseViewController {
+class GuideViewController: VideoSplashViewController {
 
-    @IBOutlet var backImageView:UIImageView?
-    var player:AVPlayer!
-    var playerItem:AVPlayerItem!
     
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
-        
-        initPlayVideo()
-        doAnimation()
-      
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
     }
-    
+      override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = UIColor.blackColor()
+        setupVideoBackground()
+        self.view.addSubview(LoginButton)
+        
+    }
+
     override func viewWillAppear(animated: Bool) {
         
-        self.player.play()
-     
+        self.navigationController?.navigationBarHidden = true
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        
-        self.player.pause()
-      
-    }
-    
-    func doAnimation()
-    {
-        var images:[UIImage]=[]
-        var image:UIImage?
-        var imageName:String?
-   
-        for index in 0..<67{
-            imageName = "logo-" + String(format: "%03d", index)
-            image = UIImage(named: imageName!)
-            print(index)
-            images.insert(image!, atIndex: index)
-        }
-        backImageView?.animationImages = images
-        backImageView?.animationRepeatCount = 1
-        backImageView?.animationDuration = 5
-        backImageView?.startAnimating()
-        
-        UIView.animateWithDuration(0.7, delay:5, options: .CurveEaseOut, animations: {
-            self.backView!.alpha = 1.0
-            self.player?.play()
-            }, completion: {
-                finished in
-                print("Animation End")
-        })
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
        
     }
+    
+    private lazy var LoginButton:UIButton = {
+        
+        let LoginButton = UIButton(frame: CGRectMake(20,SCREEN_HEIGHT-200,SCREEN_WIDTH-40,40))
+        LoginButton.setTitle("Login", forState: UIControlState.Normal)
+        LoginButton.titleLabel?.font = UI_FONT_20
+        LoginButton.addTarget(self, action:#selector(goLogin), forControlEvents: UIControlEvents.TouchUpInside)
+        LoginButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        return LoginButton
+    }()
+    
+    func goLogin(){
+    
+        self.navigationController?.pushViewController(LoginViewController(), animated:true)
+    }
+    
+    func setupVideoBackground() {
+        
+        let url = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("mCookie", ofType: "mp4")!)
+        self.videoFrame = view.frame
+        self.fillMode = .ResizeAspectFill
+        self.alwaysRepeat = true
+        self.sound = true
+        self.startTime = 12.0
+        self.alpha = 0.7
+        self.backgroundColor = UIColor.blackColor()
+        self.contentURL = url
+       
+        
+    }
 
-    func initPlayVideo ()
-    {
-        let path = NSBundle.mainBundle().pathForResource("mCookie", ofType: "mp4")
-        let url = NSURL.fileURLWithPath(path!)
-        
-        playerItem = AVPlayerItem(URL: url)
-        player = AVPlayer(playerItem: playerItem)
-        
-        let playerLayer = AVPlayerLayer(player: player)
-        print(backView.bounds)
-        playerLayer.frame = self.view.bounds
-        playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill
-        
-        self.player!.actionAtItemEnd = AVPlayerActionAtItemEnd.None
-        
-        backView!.layer.insertSublayer(playerLayer, atIndex: 0)
-        backView!.alpha = 0.0
-        
-        NSNotificationCenter.defaultCenter().addObserver ( self,
-                                                           selector: #selector(GuideViewController.didFinishVideo(_:)) ,
-                                                           name: AVPlayerItemDidPlayToEndTimeNotification ,
-                                                           object: playerItem)
-    }
-    
-    func didFinishVideo(sender: NSNotification )
-    {
-        let item = sender.object as! AVPlayerItem
-        
-        item.seekToTime(kCMTimeZero)
-        
-        self.player.play()
-    }
-    
-    
-    
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?)
-    {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    convenience init ()
-    {
-        var nibNameOrNil = String?("GuidePage")
-        
-        //考虑到xib文件可能不存在或被删，故加入判断
-        if NSBundle.mainBundle().pathForResource(nibNameOrNil, ofType: "nib") == nil {
-            nibNameOrNil = nil
-        }
-        
-        self.init(nibName: nibNameOrNil, bundle: nil)
-    }
-    
-    
-    
 }

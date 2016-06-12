@@ -15,13 +15,7 @@ class DiscoverViewModel: NSObject {
     //文章列表
     private weak var articleTable : UITableView!
     
-    //最新文章
     var newDataSource : Array<DiscoverModel> = Array()
-    // 回调
-    typealias DiscoveryViewModelSuccessCallBack = (dataSoure : Array<DiscoverModel>) -> Void
-    typealias DiscoveryVieModelErrorCallBack = (error : NSError) -> Void
-    var successCallBack : DiscoveryViewModelSuccessCallBack?
-    var errorCallBack : DiscoveryVieModelErrorCallBack?
     
     convenience init(articleTable : UITableView) {
        
@@ -29,13 +23,13 @@ class DiscoverViewModel: NSObject {
         self.articleTable = articleTable
     }
     
-    func initArticleData(result:NSMutableArray){
-       print(result)
+    func ArticleData(result:NSMutableArray){
+
         for dict in result {
-            let discoverModel : DiscoverModel = DiscoverModel(dict: dict as! NSDictionary)
-            self.newDataSource.append(discoverModel)
-            self.articleTable.reloadData()
-            
-        }
+                let discoverModel : DiscoverModel = DiscoverModel(dict: dict as! NSDictionary)
+                self.newDataSource.append(discoverModel)
+                self.articleTable.reloadData()
+
+          }
     }
 }

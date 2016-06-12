@@ -9,16 +9,16 @@
 
 import UIKit
 import Kingfisher
-
+import YYWebImage
+enum cardType :String {
+    case article = "article"
+    case project = "project"
+    case group = "group"
+    case user = "user"
+}
 class DiscoverTableViewCell:UITableViewCell {
    
     let miniumScale:CGFloat = 0.85;
-    var bgView:UIView!
-    var titleLabel:UILabel!
-    var cover_image:UIImageView!
-    var author_avator:UIImageView!
-    var author_name:UILabel!
-    var author_image:UIImage!
     var model : DiscoverModel? {
         willSet {
            
@@ -27,12 +27,50 @@ class DiscoverTableViewCell:UITableViewCell {
         didSet {
             
             if model != nil {
-            
-          let imageUrl = NSURL(string:((model?.cover_image)?.stringByAddingPercentEncodingWithAllowedCharacters( NSCharacterSet.URLQueryAllowedCharacterSet())!)!)
-            self.author_avator.kf_setImageWithURL(imageUrl!,placeholderImage: nil,optionsInfo:nil)
-            self.cover_image.kf_setImageWithURL(imageUrl!,placeholderImage: nil,optionsInfo:nil)
-            self.titleLabel.text = model?.article_title
-            self.author_name.text = model?.author_name
+       
+                let imageUrl = NSURL(string:(self.model?.cover_image?.URLFormat())!)
+                let avatorUrl = NSURL(string:((self.model?.author_avator)?.URLFormat())!)
+                self.card_tyoe.text = model?.card_type
+                self.cover_image.yy_setImageWithURL(imageUrl, placeholder: nil)
+                self.author_avator.yy_setImageWithURL(avatorUrl, placeholder: nil)
+                self.articleTitle.text = model?.article_title
+                self.write_date.text = model?.write_date
+                
+                switch model?.card_type {
+                case cardType.article.rawValue?:
+                    self.author_avator.hidden = false
+                    self.card_tyoe.hidden = false
+                    self.articleTitle.frame = CGRectMake(80,SCREEN_WIDTH-85,SCREEN_WIDTH-120,44)
+                    contentType.image = UIImage(named:"type_flag_article")
+                    break
+                case cardType.project.rawValue?:
+                    self.author_avator.hidden = false
+                    self.card_tyoe.hidden = false
+                    self.articleTitle.frame = CGRectMake(80,SCREEN_WIDTH-85,SCREEN_WIDTH-120,44)
+                    contentType.image = UIImage(named:"type_flag_project")
+                    break
+                case cardType.group.rawValue?:
+                    self.author_avator.hidden = true
+                    self.card_tyoe.hidden = true
+                    self.articleTitle.frame = CGRectMake(30,SCREEN_WIDTH-100,SCREEN_WIDTH-120,44)
+                    self.articleTitle.text = model?.author_name
+                    self.labelCount.text = getFontName("icon-m-user")+" \(model!.memberCount!)"
+                    
+                
+                    break
+                case cardType.user.rawValue?:
+                    self.author_avator.hidden = false
+                    self.card_tyoe.hidden = true
+                    self.articleTitle.frame = CGRectMake(80,SCREEN_WIDTH-100,SCREEN_WIDTH-120,44)
+                    self.articleTitle.text = model?.author_name
+                    self.labelCount.text = getFontName("icon-m-user")+" \(model!.followedCount!)"
+                   
+                    
+                    break
+                default:
+                    print("未知类型")
+                }
+
              
             }
         }
@@ -40,36 +78,94 @@ class DiscoverTableViewCell:UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        self.backgroundColor = UIColor(rgba:"#C8CECD")
         createUI()
     }
     
     func createUI(){
     
-    
-        self.bgView  = UIView(frame:CGRectMake(20,0,SCREEN_WIDTH-40,SCREEN_WIDTH-40))
-        self.bgView.backgroundColor = UIColor.whiteColor()
-        self.bgView.layer.shadowOffset = CGSizeMake(1,1);
-        self.bgView.layer.shadowOpacity = 0.3;
-        self.bgView.layer.shadowColor = UIColor.blackColor().CGColor
-        self.contentView.addSubview(self.bgView)
-        
-        cover_image = UIImageView(frame:CGRectMake(0,0,SCREEN_WIDTH-40,SCREEN_WIDTH-140))
-        
-        titleLabel = UILabel(frame:CGRectMake(20,SCREEN_WIDTH-140,SCREEN_WIDTH-80,44))
-        titleLabel.font = UI_FONT_16
-        author_avator = UIImageView(frame:CGRectMake(20,SCREEN_WIDTH-100,50,50))
-        author_avator.layer.masksToBounds = true
-        author_avator.layer.cornerRadius = 25
-        author_name = UILabel(frame:CGRectMake(80,SCREEN_WIDTH-100,SCREEN_WIDTH-40,44))
-        
-        
-        self.bgView.addSubview(titleLabel)
-        self.bgView.addSubview(cover_image)
-        self.bgView.addSubview(author_avator)
-        self.bgView.addSubview(author_name)
+        contentView.addSubview(bgView)
+        bgView.addSubview(cover_image)
+        bgView.addSubview(author_avator)
+        bgView.addSubview(card_tyoe)
+        bgView.addSubview(articleTitle)
+        bgView.addSubview(write_date)
+        bgView.addSubview(contentType)
+        bgView.addSubview(labelCount)
     
     }
+    
+    
+    private lazy var bgView:UIView = {
+    
+        let bgView  = UIView(frame:CGRectMake(20,0,SCREEN_WIDTH-40,SCREEN_WIDTH-40))
+        bgView.backgroundColor = UIColor.whiteColor()
+        bgView.layer.cornerRadius = 5
+        bgView.layer.shadowOffset = CGSizeMake(1,1);
+        bgView.layer.shadowOpacity = 0.1;
+        bgView.layer.shadowColor = UIColor.blackColor().CGColor
+        return bgView
+    }()
+    
+    private lazy var cover_image:UIImageView = {
+    
+        let cover_image = UIImageView(frame:CGRectMake(0,0,SCREEN_WIDTH-40,(SCREEN_WIDTH-40)/4*3))
+        cover_image.backgroundColor = UIColor(rgba:"#F6F6F8")
+        let maskPath = UIBezierPath(roundedRect:cover_image.bounds,byRoundingCorners:[.TopLeft,.TopRight],cornerRadii:CGSizeMake(5, 5))
+        let maskLayer = CAShapeLayer()
+        maskLayer.frame = cover_image.bounds;
+        maskLayer.path = maskPath.CGPath
+        cover_image.layer.mask = maskLayer;
+  
+       
+   
+        return cover_image
+    }()
+    
+    private lazy var author_avator:UIImageView = {
+    
+        let author_avator = UIImageView(frame:CGRectMake(20,SCREEN_WIDTH-100,50,50))
+        author_avator.layer.masksToBounds = true
+        author_avator.layer.cornerRadius = 25
+        return author_avator
+    
+    }()
+    
+    private lazy var contentType:UIImageView = {
+        
+        let contentType = UIImageView(frame:CGRectMake(SCREEN_WIDTH-90,0,40,50))
+        return contentType
+        
+    }()
+    
+    private lazy var articleTitle:UILabel = {
+    
+        let articleTitle = UILabel(frame:CGRectMake(80,SCREEN_WIDTH-85,SCREEN_WIDTH-120,44))
+        return articleTitle
+    }()
+    
+    private lazy var write_date:UILabel = {
+        
+        let write_date = UILabel(frame:CGRectMake(5,((SCREEN_WIDTH-40)/4*3)-30,SCREEN_WIDTH-40,30))
+        write_date.shadowColor = UIColor.blackColor()
+        write_date.shadowOffset = CGSizeMake(0.5,0.5)
+        write_date.textColor = UIColor.whiteColor()
+        return write_date
+    }()
+    
+    private lazy var labelCount:UILabel = {
+    
+       let labelCount = UILabel(frame:CGRectMake(SCREEN_WIDTH-110,SCREEN_WIDTH-100,60,44))
+        labelCount.font = UIFont(name:"microduino-icon", size:17)
+        return labelCount
+    }()
+    
+    
+    private lazy var card_tyoe:UILabel = {
+        
+        let card_type = UILabel(frame:CGRectMake(80,SCREEN_WIDTH-115,SCREEN_WIDTH-120,44))
+        return card_type
+    }()
     
     required init?(coder aDecoder: NSCoder) {
         
@@ -81,19 +177,7 @@ class DiscoverTableViewCell:UITableViewCell {
         super.prepareForReuse();
       
     }
-    
-    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
-        
-        let scale = newWidth / image.size.width
-        let newHeight = image.size.height * scale
-        UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight))
-        image.drawInRect(CGRectMake(0, 0, newWidth, newHeight))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage
-    }
-    
-    
+  
     func transformCell(forScale scale: CGFloat) {
        
     }

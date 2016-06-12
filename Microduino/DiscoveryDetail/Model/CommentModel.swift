@@ -25,10 +25,10 @@ class CommentModel: NSObject {
         self.init()
         
         self.comment_id = "\(dict["_id"]!)"
-        self.comment_avator = "\(dict["comment"]!)"
+        self.comment_avator = "\(dict["avatar"]!)"
         self.comment_name = "\(dict["userName"]!)"
-        let content = NSString_Extension().flattenHTML("\(dict["comment"]!)", trimWhiteSpace:true)
-        self.comment_content = content
+        var string = "\(dict["comment"]!)" as String
+        self.comment_content = string.filterHTML()
         let date = NSDate(fromString:"\(dict["date"]!["$date"]!)",format: .DotNet)
         let formatter = NSDateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

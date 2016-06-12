@@ -8,203 +8,205 @@
 
 import UIKit
 import SwiftDDP
-import Fuzi
 import MJRefresh
+import SnapKit
 class DiscoverDetailViewController: YHBaseController,UIScrollViewDelegate{
 
-    var webview:UIWebView?
     var card_Id:NSString?
     var card_Type:NSString?
+    
     var lastContentOffset:CGFloat?
-    var commentTextView:UITextView?
+    var oldOffset:CGFloat?
+    var keyboardHeight:CGFloat?
+    
     var commentCell:DiscoverCommentViewCell?
-    private var viewModel : CommentViewModel?
+    
+    private var articleModel:ArticleModel?
+    private var commentModel : CommentViewModel?
+    var dismissFrame = CGRectMake(0, 0, 0, 0)
+    var navBar = UIView()
     override func viewDidLoad() {
  
-         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
-        self.view.backgroundColor = UIColor(rgba:"#F2F2F6")
-        self.automaticallyAdjustsScrollViewInsets = false
-
-        toolBarView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height:64)
-        toolBarView.backgroundColor = UIColor(rgba:"#F2F2F6")
-        self.view.addSubview(toolBarView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
         
-        returnBtn.frame = CGRect(x: 20, y: 27, width: 30, height: 30)
-        self.view.addSubview(returnBtn)
+      
+        self.view.backgroundColor = UIColor.whiteColor()
+        
+        let navBut = UIButton(type: UIButtonType.System)
+        let navTitle = UILabel()
+        navBar.frame=CGRectMake(0, 0, self.view.bounds.width, 64)
+        navBut.frame=CGRectMake(0, 16, 45, 45)
+        navTitle.frame=CGRectMake(55 , 20, self.view.bounds.width-50, 30)
+        
+        navBar.backgroundColor = UIColor(rgba:"#673ab7")
+        navBut.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        navBut.tintColor=UIColor.whiteColor()
+        navBut.setImage(UIImage(named: "back")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        navBut.addTarget(self, action: "dismiss", forControlEvents: UIControlEvents.TouchUpInside)
+        navTitle.textColor=UIColor.whiteColor()
+        navTitle.font=UIFont(name: "Roboto-Medium", size: 20)
+        navTitle.text="Detail Page"
+        
+        navBar.addSubview(navBut)
+        navBar.addSubview(navTitle)
+        view.addSubview(navBar)
+
+
+        createUI()
+        createCommentView()
+       
+       
+    }
+   
+    override func viewWillAppear(animated: Bool) {
+        
+        reloadWebData()
+    }
     
-        // 底部评论view
+
+    func createUI(){
+    
+      
         self.view.addSubview(bottomView)
+      
         self.bottomView.snp_makeConstraints { (make) -> Void in
             make.left.right.bottom.equalTo(self.view)
             make.height.equalTo(40)
         }
-        tableview.registerClass(DiscoverCommentViewCell.self, forCellReuseIdentifier:"cellIdentifier")
-        viewModel = CommentViewModel(commentTable:tableview)
-        self.webview = UIWebView(frame:CGRectMake(0,0,SCREEN_WIDTH,1))
-        self.webview!.scrollView.showsHorizontalScrollIndicator = false
-        self.webview!.scrollView.scrollEnabled = false;
-        self.webview!.scrollView.bounces = false;
-        self.webview!.delegate = self
-        
-        
-        createCommentView()
-     
-        reloadWebData()
+        commentModel = CommentViewModel(commentTable:tableview)
+      
     }
     
-    
-    func reloadWebData(){
+    func  createCommentView(){
         
-        self.showProgress()
-        
-        Meteor.call("mobile/comments", params:[self.card_Id!], callback: { (result, error) in
-            
-            if((error) != nil||result == nil){
-                
-                
-            }else{
-                
-                for comment in result as! NSArray{
-                    
-                    let dict = comment as! NSDictionary
-                    
-                    Meteor.call("mobile/comment_remove", params:[dict.objectForKey("_id")!], callback: { (result, error) in
-                    })}
-                
-                self.viewModel?.initCommentData(NSMutableArray(array:result as! NSArray))
-                
-            }
-            
-        })
- 
-            Meteor.call("mobile/article_show", params:[self.card_Id!], callback: { (result, error) in
-                
-                if((error) != nil||result == nil){
-                    self.showNetWorkErrorView()
-                    self.hiddenProgress()
-                     
-                }else{
-                    
-                    let model =  ArticleModel(dict:result! as! NSDictionary)
-                    var htmlString = model.content!
-                    htmlString.appendContentsOf(HTML_CONSTRAINT)
-                    self.webview!.loadHTMLString(htmlString, baseURL:nil)
-                   
-                }})
-            
-        
- 
-    }
- 
-    func textChange(notification:NSNotification){
-    
-    }
-    
-    func errorBtnDidClick() {
-   
-        reloadWebData()
-       
-    }
+        self.view.addSubview(messageView)
+        self.view.sendSubviewToBack(messageView)
 
-    //MARK:- CenterViewDelegate
-    func returnBtnDidClick(sender:UIButton) {
-        
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    
-   func  createCommentView(){
-    
-        commentTextView = UITextView(frame: CGRectMake(0,SCREEN_HEIGHT,SCREEN_WIDTH,80))
-        commentTextView!.backgroundColor = UIColor.whiteColor()
-        commentTextView?.layer.borderWidth = 10
-        commentTextView?.contentOffset = CGPointMake(10,10)
-        commentTextView?.layer.borderColor = UIColor(rgba:"#F2F2F6").CGColor
-        commentTextView!.contentInset = UIEdgeInsetsMake(10.0,10.0, 10.0, 10.0)
-        self.view.addSubview(commentTextView!)
-    
-        let keyboardDoneButtonView = UIView(frame:CGRectMake(0,0,SCREEN_WIDTH,40))
-        keyboardDoneButtonView.backgroundColor = UIColor(rgba:"#F2F2F6")
-        commentTextView!.inputAccessoryView = keyboardDoneButtonView;
-    
-        let sendCommentButton = UIButton(frame:CGRectMake(SCREEN_WIDTH-80,5,60,30))
-        sendCommentButton.setTitle("发表评论", forState: UIControlState.Normal)
-        sendCommentButton.titleLabel?.font = UI_FONT_10
-        sendCommentButton.addTarget(self, action:#selector(sendComment), forControlEvents: UIControlEvents.TouchUpInside)
-        sendCommentButton.backgroundColor = UIColor(rgba:"#6CE137")
-        keyboardDoneButtonView.addSubview(sendCommentButton)
-    
-//    UIImage *maskImage = [UIImage imageNamed:@"btn_link_fill"];
-//    UIImage *lineImage = [UIImage imageNamed:@"btn_link_line"];
-    
-    
-    
-        
-    
-    
-    
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillAppear), name: UIKeyboardWillShowNotification, object: nil)
-    
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillDisappear), name:UIKeyboardWillHideNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(notiOfTextViewContentSizeHeightChangedActionHeigher), name:NotiOfTextViewContentSizeHeightChangedHeigher, object: nil)
     
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(notiOfTextViewContentSizeHeightChangedActionLower), name:NotiOfTextViewContentSizeHeightChangedLower, object: nil)
+    
+        
     }
     
-  
-    private lazy var toolBarView : DiscoverDetailToolView = {
-        let toolBarView : DiscoverDetailToolView = DiscoverDetailToolView.toolView()
-        toolBarView.delegate = self
-        return toolBarView
-    }()
     
-   // 评论栏
+    // MARK: 控件懒加载
+  
+    //文章
+    private lazy var articleWebView:UIWebView = {
+    
+        let articleWebView:UIWebView = UIWebView(frame:CGRectMake(0,0,SCREEN_WIDTH,1))
+        articleWebView.scrollView.showsHorizontalScrollIndicator = false
+        articleWebView.scrollView.scrollEnabled = false
+        articleWebView.scrollView.bounces = false
+        articleWebView.delegate = self
+        return articleWebView
+    }()
+
+    // 评论栏
     private lazy var bottomView : DiscoverDetailCommentView = {
         let bottomView : DiscoverDetailCommentView = DiscoverDetailCommentView()
         bottomView.delegate = self
         return bottomView
     }()
     
+    // 评论窗口
+    private lazy var messageView:YHMessageView = {
+    
+        let messageView:YHMessageView = YHMessageView(frame:CGRectMake(0,SCREEN_HEIGHT,SCREEN_WIDTH, CGFloat(MessageViewDefaultHeight)))
+        messageView.delegate = self
+        return messageView
+    }()
+
+    // 列表
     private lazy var tableview:UITableView = {
     
-        let tableview:UITableView = UITableView(frame:CGRectMake(0,64,SCREEN_WIDTH,SCREEN_HEIGHT-64),style:UITableViewStyle.Grouped)
+        let tableview:UITableView = UITableView(frame:CGRectMake(0,64,SCREEN_WIDTH,SCREEN_HEIGHT),style:UITableViewStyle.Grouped)
         tableview.delegate = self
         tableview.dataSource = self
+        tableview.registerClass(DiscoverCommentViewCell.self, forCellReuseIdentifier:"cellIdentifier")
         return tableview
     
     }()
     
-    // 返回按钮
-    private lazy var returnBtn : UIButton = {
-        let returnBtn : UIButton = UIButton()
-        returnBtn.addTarget(self, action:#selector(returnBtnDidClick(_:)), forControlEvents: .TouchUpInside)
-        returnBtn.setImage(UIImage(named: "detail_icon_back_normal"), forState: .Normal)
-        returnBtn.setImage(UIImage(named: "detail_icon_back_pressed"), forState: .Highlighted)
-        return returnBtn
-    }()
+    
 
-    // 描述(p)
-    private func createPTitleLabel() -> YYLabel {
-        let contentLabel : YYLabel = YYLabel()
-        contentLabel.displaysAsynchronously = true
-        contentLabel.font = UI_FONT_16
-        contentLabel.textColor = UIColor.darkGrayColor()
-        contentLabel.numberOfLines = 0
-        return contentLabel
-    }
 }
+
+// MARK: 数据加载
+
+extension DiscoverDetailViewController{
+
+    
+    func reloadWebData(){
+        
+        self.showProgress()
+        
+        Meteor.call(ServerAPI.articleComments, params:[self.card_Id!], callback: { (result, error) in
+     
+            if((error) != nil||result == nil){
+                
+                self.bottomView.hidden = true
+                
+            }else{
+                
+                self.commentModel?.initCommentData(NSMutableArray(array:result as! NSArray))
+                
+            }
+            
+        })
+        
+        Meteor.call(ServerAPI.articleShow, params:[self.card_Id!], callback: { (result, error) in
+           
+            if((error) != nil||result == nil){
+                self.showNetWorkErrorView()
+                self.hiddenProgress()
+                self.bottomView.hidden = true
+                
+            }else{
+               
+              
+                self.articleModel =  ArticleModel(dict:result! as! NSDictionary)
+                var htmlString = self.articleModel!.content!
+                htmlString.appendContentsOf(HTML_CONSTRAINT)
+                self.articleWebView.loadHTMLString(htmlString, baseURL:nil)
+                
+            }})
+    }
+    
+    
+    func errorBtnDidClick() {
+        
+        reloadWebData()
+        
+    }
+    
+    func returnBtnDidClick() {
+        
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+}
+
+// MARK: 文章内容加载
 
 extension DiscoverDetailViewController:UIWebViewDelegate{
 
 
+    
     func webViewDidFinishLoad(webView: UIWebView) {
         hiddenProgress()
         self.view.addSubview(tableview)
         if(!webView.loading){
         let height =  webView.stringByEvaluatingJavaScriptFromString("document.body.offsetHeight")! as NSString
-        self.webview!.stringByEvaluatingJavaScriptFromString(FOUND_IMG)
-        self.webview!.stringByEvaluatingJavaScriptFromString("addImgClickEvent();")
-        self.webview?.frame = CGRectMake((self.webview?.frame.origin.x)!,(self.webview?.frame.origin.y)!,SCREEN_WIDTH,CGFloat(height.floatValue));
+        articleWebView.stringByEvaluatingJavaScriptFromString(FOUND_IMG)
+        articleWebView.stringByEvaluatingJavaScriptFromString("addImgClickEvent();")
+        articleWebView.frame = CGRectMake((articleWebView.frame.origin.x),(articleWebView.frame.origin.y),SCREEN_WIDTH,CGFloat(height.floatValue)+20);
         self.view.bringSubviewToFront(bottomView)
-        self.view.bringSubviewToFront(commentTextView!)
      
         }
     }
@@ -216,12 +218,15 @@ extension DiscoverDetailViewController:UIWebViewDelegate{
             
             if let imageUrl = src {
                 
-                
-                if(((imageUrl != "about:blank"))&&(imageUrl.containsString("jpg")))||(((imageUrl != "about:blank"))&&(imageUrl.containsString("png"))){
-                
+                if(((imageUrl != "about:blank"))&&(imageUrl.containsString("jpg")))||(((imageUrl != "about:blank"))&&(imageUrl.containsString("png"))||((imageUrl != "about:blank"))&&(imageUrl.containsString("JPG"))){
                 let ImageViewer: imagePreview = imagePreview(imageURLs:[imageUrl], index: 0)
                 ImageViewer.show()
                 
+                }else if(navigationType == UIWebViewNavigationType.LinkClicked&&imageUrl.containsString("http")){
+                    
+                    let tabVC = YHWebViewController(url:imageUrl)
+                    self.navigationController!.pushViewController(tabVC, animated: true)
+                    
                 }
             }
 
@@ -230,58 +235,39 @@ extension DiscoverDetailViewController:UIWebViewDelegate{
         
         return true
     }
+    
+    
+    func dismiss(){
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
 }
 
-extension DiscoverDetailViewController:XMFindAppDetailToolViewDelegate,XMHomeDetailCenterViewDelegate{
-
-
-    func homeDetailCenterViewBottomShareDidClick(centerView: DiscoverCenterView) {
-        
-    }
-    
-    func homeDetailCenterView(centerView: DiscoverCenterView, returnButtonDidClick returnButton: UIButton) {
-        
-    }
-    
-    //MARK:- CenterViewDelegate
-    func FindAppDetailCenterViewReturnBtnDidClick() {
-        
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    func XMFindAppDetailToolViewDownloadBtnClick() {
-        
-        
-    }
-    
-    func XMFindAppDetailToolViewShareBtnClick() {
-        
-        
-        
-    }
-   
-    
-}
+// MARK: 文章＋评论列表
 
 extension DiscoverDetailViewController:UITableViewDelegate,UITableViewDataSource{
 
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
+    if(section == 1){
         let view = UILabel(frame:CGRectMake(0,0,SCREEN_WIDTH,30))
-        if(section == 1){
-        view.text = "  评论  \((self.viewModel?.newDataSource.count)! as Int)"
-        view.backgroundColor = UIColor(rgba:"#F2F2F6")
-        view.textColor = UIColor(rgba:"#C83C3A")
-        }
+        view.text = "  评论  \((self.commentModel?.newDataSource.count)! as Int)"
+        view.backgroundColor = UIColor(rgba:"#C8CECD")
+        view.textColor = UIColor.blackColor()
         return view
+    }else{
         
-    }
+        let followView = FollowAuthorView(frame:CGRectMake(0,0,SCREEN_WIDTH,55))
+        followView.delegate = self
+        followView.model = articleModel
+        bottomView.model = articleModel
+        return followView
+    }}
 
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if(section == 0){
        
-            return 0.5
+            return 55
         }else{
         
             return 30
@@ -306,8 +292,8 @@ extension DiscoverDetailViewController:UITableViewDelegate,UITableViewDataSource
             return 1
         
         }else{
-            if self.viewModel != nil {
-                return (self.viewModel?.newDataSource.count)!
+            if self.commentModel != nil {
+                return (self.commentModel?.newDataSource.count)!
             }
             else{
                 return 0
@@ -321,45 +307,32 @@ extension DiscoverDetailViewController:UITableViewDelegate,UITableViewDataSource
         
         if(indexPath.section == 0){
         
-            if((webview) != nil){
-            return (self.webview?.size.height)!
-            }else{
-            
-                return 0
-            }
-        
+              return (articleWebView.size.height)
         }
-        else{
-            
-        if((commentCell) != nil){
+  
+       else if((commentCell) != nil){
             
             return (commentCell?.frame.height)!
             
         }else{
             
-          return 100
+          return 120
         }
-          
-        
-    }
+
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
         
         if indexPath.section == 0{
             let tableCell = UITableViewCell(style:UITableViewCellStyle.Subtitle, reuseIdentifier:"cell")
             tableCell.selectionStyle = UITableViewCellSelectionStyle.None
-            if((webview) != nil){
-            
-                tableCell.contentView.addSubview(webview!)
-            }
-            
+            tableCell.contentView.addSubview(articleWebView)
             return tableCell
         }else{
             
             let cellIndentifier :String = "cellIdentifier";
             commentCell = tableView.dequeueReusableCellWithIdentifier(cellIndentifier) as? DiscoverCommentViewCell
             commentCell!.selectionStyle = UITableViewCellSelectionStyle.None
-            commentCell?.model = self.viewModel?.newDataSource[indexPath.row]
+            commentCell?.model = self.commentModel?.newDataSource[indexPath.row]
             return commentCell!
             }
     }
@@ -367,105 +340,228 @@ extension DiscoverDetailViewController:UITableViewDelegate,UITableViewDataSource
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 
-        UIApplication.sharedApplication().keyWindow?.endEditing(true)
-    
-        
+        self.view.endEditing(true)
     }
     
+
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        
         lastContentOffset = scrollView.contentOffset.y
-        
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
         
-        if lastContentOffset >= scrollView.contentOffset.y{
-            bottomView.hidden = false
-        }
-        else{
-        
-           bottomView.hidden = true
-        }
-    }
+        if (scrollView.dragging) {
+            if scrollView.contentOffset.y - lastContentOffset! > 5.0 {
     
-}
-extension DiscoverDetailViewController:UITextViewDelegate{
-
-   
-    func  textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        
-        if(text == "\n"){
-    
-            textView.resignFirstResponder()
-    
-            return false
-        
-        }
-        return true
-    }
- 
-    func sendComment(){
-    
-       
-        let dict: [String: AnyObject] = ["linkedObjectId":card_Id!,"comment":(commentTextView?.text)!.stringByAddingPercentEncodingWithAllowedCharacters( NSCharacterSet.URLQueryAllowedCharacterSet())!]
-        Meteor.connect(HOST_NAME) {
-            Meteor.call("mobile/comment_add", params:[dict], callback: { (result, error) in
-          
-                    self.reloadWebData()
-                    self.commentTextView?.resignFirstResponder()
-                    
+                bottomView.snp_updateConstraints(closure: { (make) in
+                    make.bottom.equalTo(44)
+                })
+                UIView.animateWithDuration(0.25, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            } else if lastContentOffset! - scrollView.contentOffset.y > 5.0 {
+      
+                bottomView.snp_updateConstraints(closure: { (make) in
+                    make.bottom.equalTo(0)
+                })
+                UIView.animateWithDuration(0.25, animations: {
+                    self.view.layoutIfNeeded()
                 })
             }
-    
-
+            
+        }
     }
+
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        
+        if case let space = scrollView.contentOffset.y + SCREEN_HEIGHT - scrollView.contentSize.height where space > -5 && space < 5 {
+            bottomView.snp_updateConstraints(closure: { (make) in
+                make.bottom.equalTo(0)
+            })
+            UIView.animateWithDuration(0.25, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+
+
 }
+// MARK: 底部工具条
+
 extension DiscoverDetailViewController:DiscoverCommentViewDelegate{
 
     func DiscoverCommentBtnClick() {
+
+        self.view.bringSubviewToFront(messageView)
+        messageView.textView!.becomeFirstResponder()
         
-        commentTextView!.becomeFirstResponder()
     }
 
     func DiscoverPriaseBtnClick(tag: Int) {
    
-        
-      let  param = card_Type == "project" ? "product_favorite" : "article_favorite"
-   
-        Meteor.call("mobile/\(param)", params:[card_Id!], callback: { (result, error) in
-        
+        Meteor.call(ServerAPI.articleFavorite, params:[card_Id!], callback: { (result, error) in
+            if(error != nil){
+                
+                YHAlertController.alert("ERROR", message:"点赞失败")
+            }else{
+                self.bottomView.favcount.text = "\(result as! Int)"
+            }
         })
     }
     
-    func DiscoverShareBtnClick() {
-        
-        UMSocialSnsService.presentSnsIconSheetView(self, appKey:"56f8d516e0f55af048001f43", shareText: "来自Microduino", shareImage:UIImage(named:"menu"), shareToSnsNames:[UMShareToSina,UMShareToQQ,UMShareToWechatTimeline,UMShareToFacebook,UMShareToTwitter,UMShareToInstagram], delegate:self)
-        
-   
-        
-        
-        
-    }
+    func DiscoverShareBtnClick()
     
-
-    func keyboardWillAppear(notification: NSNotification) {
+    {
+//        let shareWdn = ShareWindow.shareInstance
+//        shareWdn.delegate = self
+//        shareWdn.showShareView()
+//
+       UMSocialSnsService.presentSnsIconSheetView(self, appKey:"56f8d516e0f55af048001f43", shareText:"推荐@\(articleModel!.author_name!)的文章\(articleModel!.article_shareUrl!)   (分享自@Microduino)", shareImage:nil, shareToSnsNames:[UMShareToSina,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToFacebook,UMShareToTwitter,UMShareToInstagram], delegate:self)
         
-        let keyboardinfo = notification.userInfo![UIKeyboardFrameEndUserInfoKey]
-        let keyboardheight:CGFloat = (keyboardinfo?.CGRectValue.size.height)!
-        commentTextView!.frame = CGRectMake(0,SCREEN_HEIGHT-keyboardheight-80,SCREEN_WIDTH,80)
+   }
+    
+    
+    
+    func keyboardWillAppear(notification: NSNotification) {
+        articleWebView.userInteractionEnabled = false
+        if let userInfo = notification.userInfo {
+            
+            if let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue() {
+                keyboardHeight = keyboardSize.size.height
+                var messageViewNewY = SCREEN_HEIGHT - (keyboardHeight!+104)
+                
+                if((self.navigationController) != nil){
+                    if self.navigationController!.navigationBarHidden{
+                        
+                        messageViewNewY = SCREEN_HEIGHT - (keyboardHeight!+40)
+
+                    }
+                    }
+          
+                
+                UIView.animateWithDuration(0.333) {
+                    self.messageView.frame = CGRectMake(self.messageView.frame.origin.x, messageViewNewY, self.messageView.frame.size.width, self.messageView.frame.size.height)
+                }
+                
+                
+            }}
         
     }
     
     func keyboardWillDisappear(notification:NSNotification){
-        
-       commentTextView!.frame =  CGRectMake(0,SCREEN_HEIGHT,SCREEN_WIDTH,80)
+         articleWebView.userInteractionEnabled = true
+        if let userInfo = notification.userInfo {
+            if let keyboardSize = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+                keyboardHeight = keyboardSize.height
+            }}
+
     }
 
-
+    
+    func notiOfTextViewContentSizeHeightChangedActionHeigher(notification: NSNotification){
+    
+        let height = notification.object as! CGFloat
+        messageView.frame = CGRectMake(self.messageView.frame.origin.x,self.messageView.frame.origin.y - height, self.messageView.frame.size.width, self.messageView.frame.size.height + height)
+        self.messageView.textView!.frame = CGRectMake(CGFloat(TextViewLeadingMargin),5, self.messageView.bounds.size.width - CGFloat(TextViewLeadingMargin+TextViewTrailingMargin+SendBtnWidth+SendBtnTrailingMargin), self.messageView.bounds.size.height-10);
+    
+    }
+  
+    func notiOfTextViewContentSizeHeightChangedActionLower(notification: NSNotification){
+        
+        
+        let height = notification.object as! CGFloat
+        self.messageView.frame = CGRectMake(self.messageView.frame.origin.x, self.messageView.frame.origin.y + height, self.messageView.frame.size.width, self.messageView.frame.size.height - height);
+        self.messageView.textView!.frame = CGRectMake(CGFloat(TextViewLeadingMargin),5, self.messageView.bounds.size.width - CGFloat(TextViewLeadingMargin+TextViewTrailingMargin+SendBtnWidth+SendBtnTrailingMargin), self.messageView.bounds.size.height-10);
+        }
 }
+
+// MARK: 链接分享
+
 extension DiscoverDetailViewController:UMSocialUIDelegate{
 
+    func didFinishGetUMSocialDataInViewController(response: UMSocialResponseEntity!) {
+        
+        if(response.responseCode == UMSResponseCodeSuccess)
+        {
+          
+        }
+   
+    }
 
 }
+// MARK: 作者关注
 
+extension DiscoverDetailViewController:FollowAuthorViewDelegate{
+
+    func FollowBtnClick(sender: UIButton) {
+        if(sender.tag == 0){
+
+            Meteor.call(ServerAPI.friendFollow, params:[(articleModel?.author_id)!], callback: { (result, error) in
+                if(result != nil){
+                sender.backgroundColor = UIColor.clearColor()
+                sender.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+                sender.setTitle("已关注", forState: UIControlState.Normal)
+                sender.tag = 1
+                }
+            })
+
+            
+        }
+        else{
+            Meteor.call(ServerAPI.friendunFollow, params:[(articleModel?.author_id)!], callback: { (result, error) in
+                if(result != nil){
+                sender.backgroundColor = UIColor(rgba:"#1D1D1D")
+                sender.setTitle("关注", forState: UIControlState.Normal)
+                sender.setTitleColor(UIColor(rgba:"#AAFF18"), forState: UIControlState.Normal)
+                sender.tag = 0
+            }
+            })
+        }
+        
+    }
+}
+// MARK: 评论内容发送
+
+extension DiscoverDetailViewController:YHMessageViewDelegate{
+
+    func sendComment(comment:String){
+        
+        let dict: [String: AnyObject] = ["linkedObjectId":card_Id!,"comment":comment.convertToUTF8()]
+
+            Meteor.call(ServerAPI.commentAdd, params:[dict], callback: { (result, error) in
+      
+                self.reloadWebData()
+                
+                
+            })
+        }
+  
+  
+    func asSendBtnAction(sender: UIButton) {
+        messageView.textView!.resignFirstResponder()
+        
+        if(messageView.textView!.text.length != 0){
+            
+            sendComment(messageView.textView!.text)
+        }else{
+        
+            YHAlertController.alert("评论不能为空")
+        }
+        
+    }
+
+    func asTextViewDidBeginEditing(textView: UITextView) {
+        
+        
+    }
+   
+    func asTextViewDidEndEditing(textView: UITextView) {
+      
+        let messageViewNewY = self.messageView.frame.origin.y + keyboardHeight!
+        UIView.animateWithDuration(0.333) {
+        self.messageView.frame = CGRectMake(self.messageView.frame.origin.x, messageViewNewY, self.messageView.frame.size.width, self.messageView.frame.size.height);
+        }
+        self.view.sendSubviewToBack(messageView)
+        keyboardHeight = 0
+    }
+}

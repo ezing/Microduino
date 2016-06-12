@@ -12,8 +12,10 @@ class YHBaseController: UIViewController {
 
     override func viewDidLoad() {
         
+        self.view.backgroundColor = UIColor.whiteColor()
+        
         let tapGestureRecognizer = UITapGestureRecognizer(target: self,action:#selector(keyboardHide))
-        tapGestureRecognizer.cancelsTouchesInView = true
+        tapGestureRecognizer.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGestureRecognizer)
         
     }

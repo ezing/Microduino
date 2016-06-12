@@ -7,69 +7,113 @@
 //
 
 import UIKit
-import MMDrawerController
-import Alamofire
-import Fuzi
 import SwiftDDP
 import MJRefresh
+import RZTransitions
+import MCMHeaderAnimated
+
+
 class DiscoverViewController: UIViewController {
 
     private var viewModel : DiscoverViewModel?
     private var hotPage : Int = 0
     private var limit:Int = 10
-    var tableView : UITableView?
-  
+    var preventAnimation = Set<NSIndexPath>()
+    var transitionManager : TransitionModel!
     override func viewDidLoad() {
         super.viewDidLoad()
- 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
-        Meteor.client.logLevel = .Error
-        Meteor.client.allowSelfSignedSSL = true
-        
-        createUI()
-        showProgress()
-        viewModel = DiscoverViewModel(articleTable:self.tableView!)
-        reloadData(hotPage,limit: limit)
 
         
-    }
-    
-    func createUI(){
-    
-        let navigationView = DiscoverNavigationView(frame:CGRectMake(0,0,SCREEN_WIDTH,64))
-        self.view.addSubview(navigationView)
+        Meteor.client.logLevel = .Error
+        Meteor.client.allowSelfSignedSSL = false
+       
         
-        self.tableView = UITableView(frame:CGRectMake(0,64,SCREEN_WIDTH,SCREEN_HEIGHT-64), style:UITableViewStyle.Grouped)
-        self.tableView!.dataSource = self
-        self.tableView!.delegate = self
-        self.tableView?.rowHeight = SCREEN_WIDTH-40
-        self.tableView!.tableFooterView = UIView()
-        self.tableView!.separatorStyle = UITableViewCellSeparatorStyle.None
-        self.tableView!.registerClass(DiscoverTableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
-        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self,refreshingAction: #selector(tableFooterRefresh))
-        self.view!.addSubview(self.tableView!)
+        self.addLeftBarButtonWithImage(UIImage(named: "menu")!)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView:writeButton)
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        self.navigationItem.titleView = titleLabel
+        self.view.addSubview(tableView)
         
-        let menuButton=UIButton(frame: CGRectMake(20,30,20,20))
-        menuButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        menuButton.setImage(UIImage(named:"menu"), forState: UIControlState.Normal)
-        menuButton.addTarget(self, action:#selector(doneSlide), forControlEvents: UIControlEvents.TouchUpInside)
-        navigationView.addSubview(menuButton)
+        viewModel = DiscoverViewModel(articleTable:tableView)
+        reloadData(hotPage,limit: limit)
+   
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(errorBtnDidClick), name: NOTIFY_ERRORBTNCLICK, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(writeArticle), name:"writeArticle", object: nil)
+       
         
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         
-      self.navigationController!.navigationBar.hidden = true;
-    }
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value:"DisocoverViewController")
         
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject : AnyObject])
+    }
+    
     override func didReceiveMemoryWarning() {
+       
         super.didReceiveMemoryWarning()
         
     }
+  
+    //  标题
+    private lazy var titleLabel:UILabel = {
+        
+        let titleLabel = UILabel(frame:CGRectMake(0,10,SCREEN_WIDTH,64))
+        titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.font = UIFont(name:"microduino-icon", size:18)
+        titleLabel.text = getFontName("icon-m-watch")+" Discover"
+        titleLabel.textColor = UIColor.whiteColor()
+        return titleLabel
+    }()
+    // 写文章
+    private lazy var writeButton:UIButton = {
+        
+        let writeButton = UIButton(frame: CGRectMake(SCREEN_WIDTH-20,20,30,30))
+        writeButton.setImage(UIImage(named:"write_article"), forState: UIControlState.Normal)
+        writeButton.addTarget(self, action:#selector(writeArticle), forControlEvents: UIControlEvents.TouchUpInside)
+        return writeButton
+    }()
+    //  返回按钮
+    private lazy var returnBtn :UIButton = {
+        
+        let returnBtn : UIButton = UIButton(frame:CGRectMake(10,25,30,30))
+        returnBtn.setImage(UIImage(named: "ico_back"), forState: .Normal)
+        returnBtn.setImage(UIImage(named: "ico_back"), forState: .Highlighted)
+        return returnBtn
+        
+    }()
+    // 列表
+    private lazy var tableView : UITableView = {
+        let tableView = UITableView(frame:CGRectMake(0,0,SCREEN_WIDTH,SCREEN_HEIGHT), style:UITableViewStyle.Grouped)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.backgroundColor = UIColor(rgba:"#C8CECD")
+        tableView.rowHeight = SCREEN_WIDTH-50
+        tableView.tableFooterView = UIView(frame: CGRectZero)
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.registerClass(DiscoverTableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
+        tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self,refreshingAction: #selector(tableHeaderRefresh))
+        tableView.mj_footer = MJRefreshBackFooter(refreshingTarget: self,refreshingAction: #selector(tableFooterRefresh))
+        return tableView
+    }()
+    
 }
 
+// MARK: 列表代理
 extension DiscoverViewController:UITableViewDelegate,UITableViewDataSource{
 
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if !preventAnimation.contains(indexPath) {
+            preventAnimation.insert(indexPath)
+            TipInCellAnimator.animate(cell)
+        }
+    }
+    
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if self.viewModel != nil {
             return (self.viewModel?.newDataSource.count)!
@@ -82,11 +126,19 @@ extension DiscoverViewController:UITableViewDelegate,UITableViewDataSource{
         return 1
     }
   
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 20
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 20
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+        
         let cellIndentifier :String = "cellIdentifier";
         let tableCell:DiscoverTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellIndentifier) as? DiscoverTableViewCell
         tableCell!.selectionStyle = UITableViewCellSelectionStyle.None
-        tableCell?.backgroundColor = UIColor(rgba:"#F2F2F6")
         tableCell?.model = viewModel?.newDataSource[indexPath.section]
         return tableCell!
         
@@ -95,21 +147,69 @@ extension DiscoverViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated:false)
         let discoverDetailViewController = DiscoverDetailViewController()
+         discoverDetailViewController.modalPresentationStyle = UIModalPresentationStyle.Custom;
+        discoverDetailViewController.transitioningDelegate = transitionManager;
         discoverDetailViewController.card_Id = viewModel?.newDataSource[indexPath.section].card_Id
-        discoverDetailViewController.card_Type = viewModel?.newDataSource[indexPath.section].card_Type
-        self.navigationController?.pushViewController(discoverDetailViewController, animated:true)
+        discoverDetailViewController.card_Type = viewModel?.newDataSource[indexPath.section].card_type
+        self.view.translatesAutoresizingMaskIntoConstraints = false
+        self.navigationController?.presentViewController(discoverDetailViewController, animated:true, completion:nil)
+//       self.navigationController?.pushViewController(discoverDetailViewController, animated:true)
     }
     
 }
 
+// MARK: 扩展方法
 extension DiscoverViewController{
 
     
-    func doneSlide(){
+    func getframeindexpathOfController()-> CGRect{
         
-        self.mm_drawerController.toggleDrawerSide(MMDrawerSide.Left ,animated:true, completion:nil);
         
+        return tableView.framesForRowAtIndexPath(tableView.indexPathForSelectedRow!)
     }
+    
+    
+    func writeArticle(){
+
+
+        let centerViewController = TextKitViewController()
+        let centerNavigationController = UINavigationController(rootViewController: centerViewController)
+        self.navigationController?.presentViewController(centerNavigationController, animated: true, completion: {
+            
+        })
+    }
+    
+    func reloadData(offset:Int,limit:Int){
+        
+       showProgress()
+        
+        let dict: [String: AnyObject] = ["offset":String(offset),"limit":String(limit)]
+        
+        Meteor.connect(ServerAPI.TEST_HOST_NAME){
+            
+            Meteor.loginWithPassword("zidong0822@sina.cn", password:"15034292610wo", callback: { (result, error) in})
+         
+            Meteor.call(ServerAPI.discoverCards, params:[dict], callback: { (result, error) in
+                if((error) != nil){
+                    
+                    self.showNetWorkErrorView()
+                    self.hiddenProgress()
+                    
+                }else{
+                    
+                    self.hiddenProgress()
+                    if(result?.count! != 0){
+
+                        self.viewModel?.ArticleData(result as! NSMutableArray)
+                        self.hotPage = limit+self.hotPage
+                        self.limit = limit
+                    }
+                }})
+        }
+    
+    }
+
+    
     func errorBtnDidClick() {
         
         reloadData(hotPage,limit:limit)
@@ -117,41 +217,22 @@ extension DiscoverViewController{
     
     func tableFooterRefresh(){
     
-        let workingQueue = dispatch_queue_create("my_queue", nil)
-        dispatch_async(workingQueue) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.reloadData(self.hotPage, limit:self.limit)
-                self.tableView?.reloadData()
-                self.tableView?.mj_footer.endRefreshing()
-            }
+        self.reloadData(self.hotPage, limit:self.limit)
+        self.tableView.reloadData()
+        self.tableView.mj_footer.endRefreshing()
+     
         }
+    
+    
+    func tableHeaderRefresh(){
+    
+        hotPage = 0
+        limit = 10
+        self.reloadData(self.hotPage, limit:self.limit)
+        self.tableView.reloadData()
+        self.tableView.mj_header.endRefreshing()
+    }
+    
+}
 
-    
-    
-    }
-    
-    func reloadData(offset:Int,limit:Int){
-      
-        let dict: [String: AnyObject] = ["offset":String(offset),"limit":String(limit)]
-        Meteor.connect(HOST_NAME){
-        
-        Meteor.loginWithPassword("zidong0822@sina.cn", password: "15034292610wo") { result, error in
-
-            
-        }
-        Meteor.call("mobile/cards", params:[dict], callback: { (result, error) in
-                if((error) != nil){
-                    self.showNetWorkErrorView()
-                    self.hiddenProgress()
-                    
-                }else{
-                    self.hiddenProgress()
-                    self.viewModel?.initArticleData(result as! NSMutableArray)
-                    self.hotPage = limit
-                    self.limit = limit+10
-                    
-                }})
-            }
-    }
-    }
 

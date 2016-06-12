@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+import Haneke
+
+var fonticons = NSMutableDictionary()
 
 // MARK: - 屏幕高宽
 let SCREEN_WIDTH = UIScreen.mainScreen().bounds.size.width
@@ -19,40 +22,49 @@ let UI_FONT_16 = UIFont.systemFontOfSize(16)
 let UI_FONT_14 = UIFont.systemFontOfSize(14)
 let UI_FONT_10 = UIFont.systemFontOfSize(10)
 
+// MARK: - MARGIN
+let UI_MARGIN_5 : CGFloat = 5
+let UI_MARGIN_10 : CGFloat = 10
+let UI_MARGIN_15 : CGFloat = 15
+let UI_MARGIN_20 : CGFloat = 20
+let UI_MARGIN_25 : CGFloat = 25
+
 // MARK: - 通知
 let NOTIFY_SHOWMENU : String = "NOTIFY_SHOWMENU"
 let NOTIFY_HIDDEMENU : String = "NOTIFY_HIDDEMENU"
 let NOTIFY_SETUPBG : String = "NOTIFY_SETUPBG"
 let NOTIFY_ERRORBTNCLICK : String = "NOTIFY_ERRORBTNCLICK"
 
-// 设置homeview类型 - 用于请求api
-let NOTIFY_SETUPHOMEVIEWTYPE : String = "NOTIFY_SETUPHOMEVIEWTYPE"
-let NOTIFY_OBJ_TODAY : String = "homeViewTodayType"
-let NOTIFY_OBJ_FINDAPP : String = "homeViewFindAppType"
-let NOTIFY_OBJ_RECOMMEND : String = "homeViewRecommendType"
-let NOTIFY_OBJ_ARTICLE : String = "homeViewArticleViewType"
-
-// 设置menu centreview 类型 - 用于切换centerView
-let NOTIFY_SETUPCENTERVIEW : String = "NOTIFY_SETUPCENTERVIEW"
-
 // 默认背景色
-let UI_COLOR_APPNORMAL : UIColor = UIColor(red: 54/255.0, green: 142/255.0, blue: 198/155.0, alpha: 1)
-let UI_COLOR_BORDER : UIColor = UIColor(red: 240/255.0, green: 240/255.0, blue: 240/255.0, alpha: 1)
 
-let HOST_NAME:String =
-//"ws://10.2.20.89:3000/websocket"
+public let LightLineColor:UIColor = UIColor(rgba: "#F9F9F9")
+public let GrayLineColor:UIColor = UIColor(rgba: "#D8D8D8")
+public let TitleGrayCorlor:UIColor = UIColor(rgba: "#A7A7A7")
+public let PlaceHolderColor:UIColor = UIColor(rgba: "#B6B6B6")
+public let ViewGrayBackGroundColor = UIColor(rgba: "#F5F5F5")
+public let HalfBlackTitleColor:UIColor = UIColor(rgba: "#959595")
 
-"wss://www.microduino.cn:443/websocket"
 
+
+//webView约束
 let HTML_CONSTRAINT:String = "<head><style>img{width:100% !important;}</style><body width=100% style=\"word-wrap:break-word; font-family:Arial\"></head>"
+
 let FOUND_IMG = "function addImgClickEvent() { " +
     "var imgs = document.getElementsByTagName('img');" +
-    // 遍历所有的img标签，统一加上点击事件
     "for (var i = 0; i < imgs.length; ++i) {" +
     "var img = imgs[i];" +
     "img.onclick = function () {" +
-    // 给图片添加URL scheme，以便在拦截时可能识别跳转
     "window.location.href = 'hyb-image-preview:' + this.src;" +
     "}" +
     "}" +
 "}"
+
+public  func getFontName(key:String)->String{
+    
+    let cache = Shared.dataCache
+    cache.fetch(key: "icons").onSuccess { data in
+        
+        fonticons  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+    }
+    return fonticons.objectForKey("\(key)") as! String
+}

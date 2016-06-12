@@ -181,7 +181,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
         //close
         let closeTap: UITapGestureRecognizer =
         UITapGestureRecognizer(target: self,
-            action: Selector("dismissImageViewer:"))
+            action: #selector(imagePreview.dismissImageViewer(_:)))
         
         closeTap.numberOfTapsRequired = 1
         self.addGestureRecognizer(closeTap)
@@ -190,7 +190,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
         for imageView in self.allImageView {
             let scalingTap: UIPinchGestureRecognizer =
             UIPinchGestureRecognizer(target: self,
-                action: Selector("imageScalingAction:"))
+                action: #selector(imagePreview.imageScalingAction(_:)))
             imageView.userInteractionEnabled = true
             imageView.multipleTouchEnabled = true
             imageView.addGestureRecognizer(scalingTap)
@@ -201,11 +201,11 @@ class imagePreview: UIView, UIScrollViewDelegate {
         let translation = scrollView.panGestureRecognizer.translationInView(scrollView).x
         if translation < 0 {
             if self.indexOfCurrentPage < self.imageURLs.count {
-                self.indexOfCurrentPage++
+                self.indexOfCurrentPage += 1
             }
         } else {
             if self.indexOfCurrentPage > 1 {
-                self.indexOfCurrentPage--
+                self.indexOfCurrentPage -= 1
             }
         }
         self.updateNumberTitle()

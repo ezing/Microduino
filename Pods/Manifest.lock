@@ -1,51 +1,116 @@
 PODS:
   - AFDateHelper (3.3.0)
   - Alamofire (3.2.1)
+  - AlamofireImage (2.3.1):
+    - Alamofire (~> 3.2)
+  - AliyunOSSiOS (2.2.0.1)
   - CryptoSwift (0.3)
-  - Fuzi (0.3.1)
-  - IQKeyboardManagerSwift (4.0.0)
+  - FirebaseAnalytics (3.2.0):
+    - FirebaseInstanceID (~> 1.0)
+    - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleSymbolUtilities (~> 1.1)
+    - GoogleUtilities (~> 1.3)
+  - FirebaseInstanceID (1.0.6)
+  - Fusuma (0.4.1)
+  - Google/Analytics (3.0.3):
+    - Google/Core
+    - GoogleAnalytics (~> 3.12)
+  - Google/Core (3.0.3):
+    - FirebaseAnalytics (~> 3.2)
+  - GoogleAnalytics (3.14.0)
+  - GoogleInterchangeUtilities (1.2.1):
+    - GoogleSymbolUtilities (~> 1.0)
+  - GoogleSymbolUtilities (1.1.1)
+  - GoogleUtilities (1.3.1):
+    - GoogleSymbolUtilities (~> 1.0)
+  - HanekeSwift (0.10.1)
   - Kingfisher (2.2.0)
+  - KMPlaceholderTextView (1.2.0)
+  - KRProgressHUD (1.3.0)
+  - Material (1.41.1)
+  - MCMHeaderAnimated (0.1.0)
   - MJRefresh (3.1.0)
-  - MMDrawerController (0.5.7):
-    - MMDrawerController/Core (= 0.5.7)
-    - MMDrawerController/MMDrawerBarButtonItem (= 0.5.7)
-    - MMDrawerController/MMDrawerVisualStates (= 0.5.7)
-    - MMDrawerController/Subclass (= 0.5.7)
-  - MMDrawerController/Core (0.5.7)
-  - MMDrawerController/MMDrawerBarButtonItem (0.5.7):
-    - MMDrawerController/Core
-  - MMDrawerController/MMDrawerVisualStates (0.5.7):
-    - MMDrawerController/Core
-  - MMDrawerController/Subclass (0.5.7):
-    - MMDrawerController/Core
+  - Moya (6.5.0):
+    - Moya/Core (= 6.5.0)
+  - Moya/Core (6.5.0):
+    - Alamofire (~> 3.0)
+    - Result (~> 2.0)
+  - ObjectMapper (1.3.0)
+  - Result (2.0.0)
+  - RZTransitions (1.2.1)
+  - SlideMenuControllerSwift (2.1.1)
+  - SnapKit (0.15.0)
   - SwiftDDP (0.2.2.1):
     - CryptoSwift (~> 0.3)
     - SwiftWebSocket (~> 2.6.0)
     - XCGLogger
   - SwiftWebSocket (2.6.0)
   - XCGLogger (3.3)
+  - YYCache (1.0.3)
+  - YYImage (1.0.1):
+    - YYImage/Core (= 1.0.1)
+  - YYImage/Core (1.0.1)
+  - YYText (1.0.5)
+  - YYWebImage (1.0.3):
+    - YYCache
+    - YYImage
 
 DEPENDENCIES:
   - AFDateHelper
   - Alamofire (~> 3.0)
-  - Fuzi (~> 0.3.0)
-  - IQKeyboardManagerSwift
+  - AlamofireImage (~> 2.0)
+  - AliyunOSSiOS (~> 2.2.0)
+  - Fusuma
+  - Google/Analytics
+  - HanekeSwift
   - Kingfisher (~> 2.2)
+  - KMPlaceholderTextView (~> 1.2.0)
+  - KRProgressHUD
+  - Material (~> 1.0)
+  - MCMHeaderAnimated
   - MJRefresh
-  - MMDrawerController (~> 0.5.7)
+  - Moya
+  - ObjectMapper (~> 1.0)
+  - RZTransitions
+  - SlideMenuControllerSwift
+  - SnapKit (~> 0.15.0)
   - SwiftDDP (~> 0.2.2)
+  - YYText
+  - YYWebImage
 
 SPEC CHECKSUMS:
   AFDateHelper: 137b5b9d70fe13b810e1817fa2d8c116d7988f5c
   Alamofire: f11d8624a05f5d39e0c99309b3e600a3ba64298a
+  AlamofireImage: e52336282757bbe1644f075d6cb85f19c891f939
+  AliyunOSSiOS: c6cdb91d82c31b70f8174ed12001d3107f245136
   CryptoSwift: 19d29910d88440fcb132761d9ab57e175f1b0d0e
-  Fuzi: 25118b725a1637f1676f63ae1acbba1f30a5dd6c
-  IQKeyboardManagerSwift: ede2a27b4e1ce053d03073b9c7fa439322f5e405
+  FirebaseAnalytics: 6f75b04e6bfb8e0b6e9ef298e04c24eea3b13863
+  FirebaseInstanceID: d014d574053a2fe84478f12f7bae96979e7051bb
+  Fusuma: 4dbaa05a2a20ab11a41f8dedbe650c904ea99625
+  Google: 813c467362eabc11385f5a5cc9ad0cb651a58f4e
+  GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
+  GoogleInterchangeUtilities: def8415a862effc67d549d5b5b0b9c7a2f97d4de
+  GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
+  GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
+  HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
   Kingfisher: 350869ed88d6451803b390475d977abdd9f0a357
+  KMPlaceholderTextView: cae8ee889bd38d20587eee6b2623b8218f31b8f5
+  KRProgressHUD: ab62dde5db8a759cfd780209098d9f3d9c5ba040
+  Material: 441818e40ca8d30a4b83f9795e75a0d8c88ccf97
+  MCMHeaderAnimated: eae2bd981f3d57b35c64a202f288afb441900a9c
   MJRefresh: 743e6404967d1c2c688472ea3ecfde247d872db4
-  MMDrawerController: 7a4cf8e25596bf2434e03ce50d22a8608ddee6a1
+  Moya: f7a4044719381cc6299f9ad3e0ef05f426f0557b
+  ObjectMapper: 4eb08a726e9791a93b2632049951b56a7c17e471
+  Result: 9e75e1111c774c6ac594e14907b15057053a7959
+  RZTransitions: 0e0013fda6989ee84dc5e44dca79fd539e1a975a
+  SlideMenuControllerSwift: 82ada9b04e03538c84d034cf1c09e5849c0113f7
+  SnapKit: 4962eed2ee18e48cbd2b2292fffc57efe7235f87
   SwiftDDP: b4a4d2b2adc47836fb4fb4828b8ef4c68f3f89b1
   SwiftWebSocket: c24c0dde0b33852f478ffb54226408bfe703b26b
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
+  YYCache: 282f35b5b0990833d0b7a06d864a87141a021da2
+  YYImage: b41b45bc5f32bfcdf67bdfb9c09da9e9832357c0
+  YYText: ac09660c9ccd9b817f409a20caa6f5587444d2ae
+  YYWebImage: 8da75a611fd0d2e0f58a273f9ca0bc731614cb0d
 
 COCOAPODS: 0.39.0

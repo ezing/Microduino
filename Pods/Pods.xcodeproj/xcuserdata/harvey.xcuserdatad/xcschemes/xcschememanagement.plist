@@ -4,7 +4,22 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>AFDateHelper.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Alamofire.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>AlamofireImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>AliyunOSSiOS.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -14,17 +29,62 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Fuzi.xcscheme</key>
+		<key>Fusuma.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>IQKeyboardManagerSwift.xcscheme</key>
+		<key>HanekeSwift.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>MMDrawerController.xcscheme</key>
+		<key>KMPlaceholderTextView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>KRProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Kingfisher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MCMHeaderAnimated.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MJRefresh.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Material-io.cosmicmind.material.fonts.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Material-io.cosmicmind.material.icons.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Material.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Moya.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ObjectMapper.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -34,7 +94,22 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>SDWebImage.xcscheme</key>
+		<key>RZTransitions.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Result.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SlideMenuControllerSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SnapKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -54,25 +129,95 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>YYCache.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YYImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YYText.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>YYWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>36E503954616E771655D9AE5A08EAF62</key>
+		<key>05094CC4A047119F7ADC14EE74C4881C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3E19FB5CFCB8600C109A178F9D1E75A6</key>
+		<key>094F9E8CBA22CAAAE019ED0867CE7003</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>55EB56CDCAFCB40378C29A4CF16D938D</key>
+		<key>0D0156FF227EA65B5B6D5541331BF684</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5768C8C386F7D906312DD00F8059B276</key>
+		<key>10440A0ECB03C863A2A142D4078ED21E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>10E6B119A70AD857A164D5F3DE454CF0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>27988D8725719B49EDF34E5F18F11DAC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>296D5967F4D8A686B58F3D0D699A8D20</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>35997DB47B1859599C5B39B140140A9F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4B9BE84E0B4394C132DF9B6647581459</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5CF139B7D6298D56C0BB5770372D711F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>65A5AD0BE0721D8CA902CAE501504E4D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6847254D016329D4A531D34ED2B6DF81</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6F20E324D863E55247117AA1745DDAEC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>78C33D52F7E2D591E77871DBB03E8468</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -82,12 +227,42 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>96D3562E47E4792B0A6093A0323EB398</key>
+		<key>7DDF79495F24B309AF089ACC99FC1151</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E36302E6340A05F89FB2F4F3D77E7BA2</key>
+		<key>B0C22C6BB38F7C98E86EAECD9138ECCC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B98BB271B1274782491F9F1AEF3787E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C4FF14EC9E7A04BDF05B4CFE1F7D8F79</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CC4E1A58CDE895F263495F787F6D0A43</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D58CAD74411F3EA5D73A48FFB3DC29A5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D5D6200D4BE741574DBD4FB768A6F55B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DFA5878F438E022805BFFB1CD6120E2C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -97,12 +272,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E9B5C577F89B2F2EBCB51E034A136673</key>
+		<key>EC25B770E2E786F47106EE8F013163EA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>F11D13AE50490DDD0D63F2296AE19EC6</key>
+		<key>EFC5C9FBF7820887C353A649EFD51C1A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F518B418A96317F4C8884204CC24669A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F65B5FC465EEAE8D06DA022115DFDF17</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F91226101ECE8FCFD221A3EC54481F82</key>
 		<dict>
 			<key>primary</key>
 			<true/>
